@@ -1,0 +1,32 @@
+USE [cpa_db]
+GO
+
+/****** Object:  Table [dbo].[MessageQueue]    Script Date: 2018/9/30 12:16:51 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[MessageQueue](
+	[Id] [bigint] NOT NULL,
+	[KnuthHash] [varchar](200) NULL,
+	[MsgContent] [varchar](max) NULL,
+	[CanBeRemoved] [bit] NULL,
+	[ExecuteCount] [smallint] NULL,
+	[LastExecuteTime] [datetime] NULL,
+	[CreatedTime] [datetime] NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[MessageQueue] ADD  CONSTRAINT [DF_MessageQueue_CreatedTime]  DEFAULT (getdate()) FOR [CreatedTime]
+GO
+
+

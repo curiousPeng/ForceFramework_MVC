@@ -1,0 +1,50 @@
+USE [cpa_db_exceptions]
+GO
+
+/****** Object:  Table [dbo].[Exceptions]    Script Date: 2016/11/16 16:28:56 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Exceptions](
+    [Id] [bigint] IDENTITY(1,1) NOT NULL,
+    [GUID] [uniqueidentifier] NOT NULL,
+    [ApplicationName] [nvarchar](50) NOT NULL,
+    [MachineName] [nvarchar](50) NOT NULL,
+    [CreationDate] [datetime] NOT NULL,
+    [Type] [nvarchar](100) NOT NULL,
+    [IsProtected] [bit] NOT NULL,
+    [Host] [nvarchar](100) NULL,
+    [Url] [nvarchar](500) NULL,
+    [HTTPMethod] [nvarchar](10) NULL,
+    [IPAddress] [varchar](40) NULL,
+    [Source] [nvarchar](100) NULL,
+    [Message] [nvarchar](1000) NULL,
+    [Detail] [nvarchar](max) NULL,
+    [StatusCode] [int] NULL,
+    [SQL] [nvarchar](max) NULL,
+    [DeletionDate] [datetime] NULL,
+    [FullJson] [nvarchar](max) NULL,
+    [ErrorHash] [int] NULL,
+    [DuplicateCount] [int] NOT NULL,
+ CONSTRAINT [PK_Exceptions] PRIMARY KEY CLUSTERED 
+(
+    [Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Exceptions] ADD  DEFAULT ((0)) FOR [IsProtected]
+GO
+
+ALTER TABLE [dbo].[Exceptions] ADD  DEFAULT ((1)) FOR [DuplicateCount]
+GO
