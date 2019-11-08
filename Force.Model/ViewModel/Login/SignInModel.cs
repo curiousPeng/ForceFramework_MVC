@@ -8,8 +8,7 @@ namespace Force.Model.ViewModel.Login
     public class SignInModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Account { get; set; }
 
         [Required]
         public string Password { get; set; }

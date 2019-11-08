@@ -46,9 +46,8 @@ var SnippetLogin = function () {
                         r = $(this).closest("form");
                     r.validate({
                         rules: {
-                            email: {
-                                required: !0,
-                                email: !0
+                            account: {
+                                required: !0
                             },
                             password: {
                                 required: !0
@@ -61,7 +60,7 @@ var SnippetLogin = function () {
                             success: function (e, i, a, l) {
                                 setTimeout(function () {
                                     t.removeClass("m-loader m-loader--right m-loader--light").attr("disabled", !1),
-                                        n(r, "danger", "Incorrect username or password. Please try again.");
+                                        n(r, "danger", "Incorrect account or password. Please try again.");
                                 },2e3);
                             }
                         }));

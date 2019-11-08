@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Force.App.Util;
 using Force.Common.AES;
 using Force.DataLayer;
 using Force.Model.ViewModel.Login;
 using Force.Model.ViewModel.Response;
+using Force.Model.ViewModel.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Force.App.Controllers
 {
@@ -19,23 +22,29 @@ namespace Force.App.Controllers
             return View();
         }
 
-        // POST: Login/Create
+        // POST: Login/SignIn
         [HttpPost]
         public ActionResult SignIn([FromForm] SignInModel model)
         {
             try
             {
                 // TODO: Add login logic here
-                var result = new MResponse<string>();
                 var password = AESUtil.Md5(model.Password);
-                var user = SystemUserHelper.GetModel(p => p.Password == password && p.Email == model.Email);
+                var user = SystemUserHelper.GetModel(p => p.Password == password && (p.Email == model.Account || p.Account == model.Account || p.Phone == model.Account));
                 if (user == null)
                 {
-                    result.Msg = "账户或密码错误，请确认后再试！";
-                    return Json(result);
+                    return Json(ResponseHelper.Error("账户或密码错误，请确认后再试！"));
                 }
-                //TODO:暂停在这儿，做其他事情去了！
-                return RedirectToAction(nameof(Index));
+                //存session
+                var UserCache = new SessionUser { 
+                HeadImg = user.HeadImage,
+                Token = Guid.NewGuid().ToString("x2"),
+                UId = user.Id.ToString(),
+                UserName = user.Account
+                };
+                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(UserCache));
+                //返回用户信息
+                return Json(ResponseHelper.Success(UserCache));
             }
             catch
             {
