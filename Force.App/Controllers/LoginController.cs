@@ -35,14 +35,18 @@ namespace Force.App.Controllers
                 {
                     return Json(ResponseHelper.Error("账户或密码错误，请确认后再试！"));
                 }
+                var token = Guid.NewGuid().ToString("x2");
                 //存session
-                var UserCache = new SessionUser { 
-                HeadImg = user.HeadImage,
-                Token = Guid.NewGuid().ToString("x2"),
-                UId = user.Id.ToString(),
-                UserName = user.Account
+                var UserCache = new SessionUser
+                {
+                    HeadImg = user.HeadImage,
+                    Token = token,
+                    UId = user.Id.ToString(),
+                    UserName = user.Account
                 };
-                HttpContext.Session.SetString("user", JsonConvert.SerializeObject(UserCache));
+                HttpContext.Session.SetString("UserInfo", JsonConvert.SerializeObject(UserCache));
+                //TODO：缓存用户拥有的菜单权限
+
                 //返回用户信息
                 return Json(ResponseHelper.Success(UserCache));
             }

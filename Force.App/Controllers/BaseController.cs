@@ -1,7 +1,9 @@
 ﻿using Force.Common.LightMessager.Helper;
 using Force.Common.RedisTool.Helper;
+using Force.DataLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
@@ -19,7 +21,6 @@ namespace Force.App.Controllers
         {
             _http_context = httpContextAccessor.HttpContext;
         }
-
         protected IMemoryCache Cache
         {
             get
@@ -27,7 +28,6 @@ namespace Force.App.Controllers
                 return _cache ?? (_cache = _http_context.RequestServices.GetService<IMemoryCache>());
             }
         }
-
         protected IRedisHelper RedisHlper
         {
             get
@@ -35,13 +35,37 @@ namespace Force.App.Controllers
                 return _redis_helper ?? (_redis_helper = _http_context.RequestServices.GetService<IRedisHelper>());
             }
         }
-
         protected IRabbitMQProducer RabbitMQHelper
         {
             get
             {
                 return _rabbitmq ?? (_rabbitmq = _http_context.RequestServices.GetService<IRabbitMQProducer>());
             }
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            //获取访问url地址
+            var action = context.HttpContext.Request.Path.ToString().ToLower();
+            if (action == "/")
+            {
+                action = "/home/index";
+            }
+            var actionModel = SystemMenuHelper.GetModel(p => p.ActionRoute == action);
+            var requestMethod = context.HttpContext.Request.Method.Trim().ToLower();
+            var user = context.HttpContext.Session.GetString("UserInfo");
+            if (string.IsNullOrEmpty(user))
+            {
+                if (requestMethod == "get")
+                {
+                    context.Result = new RedirectResult("/Login/Index");
+                }
+                if (requestMethod == "post")
+                {
+                    context.Result = new JsonResult(Util.ResponseHelper.Error("登录已失效，请重新登录"));
+                }
+            }
+            base.OnActionExecuting(context);
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Force.Model.ViewModel.Response;
 using Microsoft.AspNetCore.Mvc;
 using Force.Model.ViewModel.SubHeader;
+using Microsoft.AspNetCore.Http;
+using Force.DataLayer;
 
 namespace Force.App.Filter
 {
@@ -29,7 +31,6 @@ namespace Force.App.Filter
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            
             if (!context.ModelState.IsValid)
             {
                 var result = new MResponse<string>();
@@ -40,7 +41,6 @@ namespace Force.App.Filter
                         result.Msg += error.ErrorMessage;
                     }
                 }
-
                 context.Result = new JsonResult(result);
             }
         }
