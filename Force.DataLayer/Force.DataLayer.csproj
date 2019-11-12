@@ -15,8 +15,4 @@
     <ProjectReference Include="..\Force.Model\Force.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DAL\Partial\" />
-  </ItemGroup>
-
 </Project>
