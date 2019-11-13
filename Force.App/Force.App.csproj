@@ -14,7 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Home\Create.cshtml" />
     <Content Remove="Views\Home\Error.cshtml" />
     <Content Remove="Views\Home\Error401.cshtml" />
     <Content Remove="Views\Home\Error404.cshtml" />
@@ -44,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\Home\Create.cshtml" />
     <None Include="Views\Home\Error.cshtml" />
     <None Include="Views\Home\Error401.cshtml" />
     <None Include="Views\Home\Error404.cshtml" />

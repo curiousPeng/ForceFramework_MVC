@@ -57,11 +57,24 @@ var SnippetLogin = function () {
                         r.valid() && (t.addClass("m-loader m-loader--right m-loader--light").attr("disabled", !0), r.ajaxSubmit({
                             url: "/login/signin",
                             type:"post",
-                            success: function (e, i, a, l) {
-                                setTimeout(function () {
+                            success: function (data) {
+                                if (data.code === 0) {
                                     t.removeClass("m-loader m-loader--right m-loader--light").attr("disabled", !1),
-                                        n(r, "danger", "Incorrect account or password. Please try again.");
-                                },2e3);
+                                        n(r, "success", "login successful");
+                                    setTimeout(function () {
+                                        location.href = "/Home/Index";
+                                    }, 2000);
+                                } else {
+                                    t.removeClass("m-loader m-loader--right m-loader--light").attr("disabled", !1),
+                                        n(r, "danger", data.msg);
+                                    setTimeout(function () {
+                                        
+                                    }, 2e3);
+                                }
+                            },
+                            error: function () {
+                                t.removeClass("m-loader m-loader--right m-loader--light").attr("disabled", !1),
+                                    n(r, "danger", "网络连接超时！请稍后再试");
                             }
                         }));
                 }),

@@ -1,4 +1,5 @@
-﻿<header id="m_header" class="m-grid__item    m-header " m-minimize-offset="200" m-minimize-mobile-offset="200">
+﻿@model Force.Model.ViewModel.Session.SessionUser
+<header id="m_header" class="m-grid__item    m-header " m-minimize-offset="200" m-minimize-mobile-offset="200">
     <div class="m-container m-container--fluid m-container--full-height">
         <div class="m-stack m-stack--ver m-stack--desktop">
             <!-- BEGIN: Brand -->
@@ -285,10 +286,10 @@
                             <li class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light" m-dropdown-toggle="click">
                                 <a href="#" class="m-nav__link m-dropdown__toggle">
                                     <span class="m-topbar__userpic">
-                                        <img src="../assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless m--img-centered" alt="" />
+                                        <img src="@Model.HeadImg" class="m--img-rounded m--marginless m--img-centered" alt="" />
                                     </span>
                                     <span class="m-topbar__username m--hide">
-                                        Nick
+                                        @Model.UserName
                                     </span>
                                 </a>
                                 <div class="m-dropdown__wrapper">
@@ -297,14 +298,14 @@
                                         <div class="m-dropdown__header m--align-center" style="background: url(../assets/app/media/img/misc/user_profile_bg.jpg); background-size: cover;">
                                             <div class="m-card-user m-card-user--skin-dark">
                                                 <div class="m-card-user__pic">
-                                                    <img src="../assets/app/media/img/users/user4.jpg" class="m--img-rounded m--marginless" alt="" />
+                                                    <img src="@Model.HeadImg" class="m--img-rounded m--marginless" alt="" />
                                                 </div>
                                                 <div class="m-card-user__details">
                                                     <span class="m-card-user__name m--font-weight-500">
-                                                        Mark Andre
+                                                        @Model.UserName
                                                     </span>
                                                     <a href="" class="m-card-user__email m--font-weight-300 m-link">
-                                                        mark.andre@gmail.com
+                                                        @Model.Email
                                                     </a>
                                                 </div>
                                             </div>
@@ -369,7 +370,7 @@
                                                     </li>
                                                     <li class="m-nav__separator m-nav__separator--fit"></li>
                                                     <li class="m-nav__item">
-                                                        <a href="../snippets/pages/user/login-1.html" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
+                                                        <a href="/login/out" class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">
                                                             Logout
                                                         </a>
                                                     </li>

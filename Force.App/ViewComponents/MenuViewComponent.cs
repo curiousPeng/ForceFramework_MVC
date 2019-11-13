@@ -36,8 +36,6 @@ namespace PartialHtml.ViewComponents
             {
                 MenuList = SystemMenuHelper.GetList(p => SysUser.AuthMenu.Contains(p.Id) && p.Type == SystemMenu_Type_Enum.菜单 && p.IsUse == true);
             }
-
-
             //菜单树
             var Menu = GetMenu(MenuList, 0);
 

@@ -7,7 +7,6 @@ using Force.Common.AES;
 using Force.DataLayer;
 using Force.GenEnum;
 using Force.Model.ViewModel.Login;
-using Force.Model.ViewModel.Response;
 using Force.Model.ViewModel.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +28,12 @@ namespace Force.App.Controllers
         {
             try
             {
+                var UserString = HttpContext.Session.GetString("UserInfo");
+
+                if (!string.IsNullOrEmpty(UserString))
+                {
+                    return Redirect("/home/index");
+                }
                 // TODO: Add login logic here
                 var password = AESUtil.Md5(model.Password);
                 var user = SystemUserHelper.GetModel(p => p.Password == password && (p.Email == model.Account || p.Account == model.Account || p.Phone == model.Account));
@@ -51,7 +56,7 @@ namespace Force.App.Controllers
                 {
                     return Json(ResponseHelper.Error("角色未拥有权限,请联系下管理员处理"));
                 }
-                var token = Guid.NewGuid().ToString("x2");
+                var token = Guid.NewGuid().ToString("N");
                 //存session
                 var UserCache = new SessionUser
                 {
@@ -60,6 +65,7 @@ namespace Force.App.Controllers
                     UId = user.Id.ToString(),
                     UserName = user.Account,
                     RoleId = role.Id,
+                    Email = user.Email,
                     RoleName = role.Name,
                     AuthMenu = roleAuthList.Select(p=>p.MenuId).ToList()
                 };
@@ -73,50 +79,11 @@ namespace Force.App.Controllers
             }
         }
 
-        // GET: Login/Edit/5
-        public ActionResult Edit(int id)
+        // GET: Login/out
+        public ActionResult Out()
         {
-            return View();
-        }
-
-        // POST: Login/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Login/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Login/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            HttpContext.Session.Clear();
+            return Redirect("/login/index");
         }
     }
 }
