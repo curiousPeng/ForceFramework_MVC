@@ -1,106 +1,62 @@
 ﻿@model List<Force.Model.ViewModel.Menu.ViewMenu>
-<div id="m_ver_menu"
-     class="m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark "
-     m-menu-vertical="1"
-     m-menu-scrollable="0" m-menu-dropdown-timeout="500">
-    <ul class="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
-        <li class="m-menu__item " aria-haspopup="true">
-            <a href="/home/index" class="m-menu__link ">
-                <i class="m-menu__link-icon flaticon-line-graph"></i>
-                <span class="m-menu__link-title">
-                    <span class="m-menu__link-wrap">
-                        <span class="m-menu__link-text">
-                            首页
-                        </span>
-                    </span>
-                </span>
-            </a>
-        </li>
-        <li class="m-menu__section">
-            <h4 class="m-menu__section-text">
-                导航菜单
-            </h4>
-            <i class="m-menu__section-icon flaticon-more-v3"></i>
-        </li>
-        @{
-            foreach (var item in Model)
-            {
-                <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true" m-menu-submenu-toggle="hover">
-                    <a href="@item.Url" class="m-menu__link m-menu__toggle">
-                        <i class="m-menu__link-icon @item.MenuIcon"></i>
-                        <span class="m-menu__link-text">
-                            @item.MenuName
-                        </span>
-                        @if (item.Children.Count > 0)
-                        {
-                            <i class="m-menu__ver-arrow la la-angle-right"></i>
-                        }
-                    </a>
-                    <div class="m-menu__submenu ">
-                        <span class="m-menu__arrow"></span>
-                        <ul class="m-menu__subnav">
-                            <li class="m-menu__item  m-menu__item--parent" aria-haspopup="true">
-                                <span class="m-menu__link">
-                                    <span class="m-menu__link-text">
-                                        @item.MenuName
-                                    </span>
-                                </span>
-                            </li>
-                            @if (@item.Children.Count > 0)
+<div class="page-sidebar-wrapper">
+    <div class="page-sidebar navbar-collapse collapse">
+        <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+            <li class="sidebar-toggler-wrapper hide">
+                <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                <div class="sidebar-toggler"> </div>
+                <!-- END SIDEBAR TOGGLER BUTTON -->
+            </li>
+            @{
+                foreach (var item in Model)
+                {
+                    <li class="nav-item">
+                        <a href="@item.Url" class="nav-link nav-toggle">
+                            <i class="@item.MenuIcon"></i>
+                            <span class="title">@item.MenuName</span>
+                            <span class="selected"></span>
+                            <span class="arrow"></span>
+                        </a>
+                        @{
+                            if (item.Children.Count() > 0)
                             {
-                                foreach (var child in @item.Children)
-                                {
-                                    if (child.Children.Count < 1)
+                                <ul class="sub-menu">
+                                    @foreach (var subItem in item.Children)
                                     {
-                                        <li class="m-menu__item " aria-haspopup="true">
-                                            <a href="@child.Url" class="m-menu__link ">
-                                                <i class="m-menu__link-bullet @child.MenuIcon">
-                                                    <span></span>
-                                                </i>
-                                                <span class="m-menu__link-text">
-                                                    @child.MenuName
-                                                </span>
-                                            </a>
-                                        </li>
-                                    }
-                                    else
-                                    {
-                                        <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true" m-menu-submenu-toggle="hover">
-                                            <a href="@child.Url" class="m-menu__link m-menu__toggle">
-                                                <i class="m-menu__link-bullet @child.MenuIcon">
-                                                    <span></span>
-                                                </i>
-                                                <span class="m-menu__link-text">
-                                                    @child.MenuName
-                                                </span>
-                                                <i class="m-menu__ver-arrow la la-angle-right"></i>
-                                            </a>
-                                            <div class="m-menu__submenu ">
-                                                <span class="m-menu__arrow"></span>
-                                                <ul class="m-menu__subnav">
-                                                    @foreach (var child2 in child.Children)
+                                    <li class="nav-item">
+                                        <a href="@subItem.Url" class="nav-link ">
+                                            <i class="@subItem.MenuIcon"></i>
+                                            <span class="title">@subItem.MenuName</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                        @{
+                                            if (subItem.Children.Count() > 0)
+                                            {
+                                                <ul class="sub-menu">
+                                                    @foreach (var subItem1 in subItem.Children)
                                                     {
-                                                        <li class="m-menu__item " aria-haspopup="true">
-                                                            <a href="@child2.Url" class="m-menu__link ">
-                                                                <i class="m-menu__link-bullet @child2.MenuIcon">
-                                                                    <span></span>
-                                                                </i>
-                                                                <span class="m-menu__link-text">
-                                                                    @child2.MenuName
-                                                                </span>
+                                                        <li class="nav-item">
+                                                            <a href="@subItem1.Url" class="nav-link ">
+                                                                <i class="@subItem1.MenuIcon"></i>
+                                                                <span class="title">@subItem1.MenuName</span>
+                                                                <span class="selected"></span>
                                                             </a>
                                                         </li>
                                                     }
                                                 </ul>
-                                            </div>
-                                        </li>
+                                            }
+                                        }
+                                    </li>
                                     }
-                                }
+                                </ul>
                             }
-                        </ul>
-                    </div>
-                </li>
+                        }
+                    </li>
+                }
             }
-        }
-    </ul>
+        </ul>
+        <!-- END SIDEBAR MENU -->
+        <!-- END SIDEBAR MENU -->
+    </div>
+    <!-- END SIDEBAR -->
 </div>

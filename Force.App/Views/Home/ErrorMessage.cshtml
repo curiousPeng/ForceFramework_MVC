@@ -1,0 +1,117 @@
+﻿@using System.Configuration;
+@{
+    ViewData["Title"] = "ErrorMessage";
+    Layout = null;
+}
+<link href="~/css/site.css?v=1.7" rel="stylesheet" />
+
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/css/google-fonts.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/font-awesome/css/font-awesome.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/simple-line-icons/simple-line-icons.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap/css/bootstrap.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-modal/css/bootstrap-modal.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/clockface/css/clockface.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/css/components.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" id="style_components" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/css/plugins.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/layout3/css/layout.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/pages/css/error.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title"><span>提示</span></h4>
+</div>
+<div class="page-content-wrapper">
+    <div class="page-head">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 page-500">
+                    <div class=" number font-red"> </div>
+                    <div class="details">
+                        <h3 id="Title">哦!发生了一些问题.</h3>
+                        <p id="Mess">
+                            当前无权限.
+                        </p>
+                        <p>
+                            <a href="/Home/Index" class="btn red btn-outline home-goto" id="home-goto"> 首页 </a>
+                            <a href="/Login/Index" class="btn red btn-outline " id="login-goto" style="display:none"> 跳转登录 </a>
+                            &nbsp;<span class="login-mess" id="login-mess" style="display:none"> <span class="login-time" id="login-time">5</span> 秒后将自动跳转 </span>
+                            <br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<body>
+
+    <script>
+         //var type = window.location.href.substring(window.location.href.lastIndexOf("/") + 1).trim();
+            var type = @ViewBag.type;
+            var message = GetQueryString("message") != undefined? decodeUnicode(GetQueryString("message")):"";
+            if (message != undefined && message != "") {
+                document.getElementById("Title").innerHTML = "哦!发生了一些错误.";
+                document.getElementById("Mess").innerHTML = message;
+
+            } else if (message == "") {
+                document.getElementById("Title").innerHTML = "哦!发生了一些错误.";
+                document.getElementById("Mess").innerHTML = "当前暂未开放，敬请期待.";
+        }
+
+            if (type == "2") {
+                document.getElementById("Title").innerHTML = "哦!发生了一些错误.";
+                document.getElementById("Mess").innerHTML = "当前超时.";
+
+                document.getElementById("home-goto").style.display = "none";
+                document.getElementById("login-goto").style.display = "block";
+                document.getElementById("login-mess").style.display = "block";
+
+                setTimeout(function () {
+                    location.href = "/Login/Index";
+                }, 5000);
+
+                timeoutGotoMess();
+
+            } else if (type == "3") {
+                document.getElementById("Title").innerHTML = "哦!发生了一些错误.";
+                document.getElementById("Mess").innerHTML = "当前无权限.";
+            } else if (type == "4") {
+
+                document.getElementById("Title").innerHTML = "哦!发生了一些错误.";
+                document.getElementById("Mess").innerHTML = "您的账号已在其他地方登录，五秒后将跳转重新登录页面，如需重新登录可继续使用.";
+
+                document.getElementById("home-goto").style.display = "none";
+                document.getElementById("login-goto").style.display = "block";
+                document.getElementById("login-mess").style.display = "block";
+
+                setTimeout(function () {
+                    location.href = "/Login/Index";
+                }, 5000);
+
+                timeoutGotoMess();
+            }
+
+            function timeoutGotoMess() {
+                setInterval(function () {
+                    var timeValue = document.getElementById("login-time").innerHTML;
+                    timeValue = (parseInt(timeValue) - 1) < 1 ? 1 : (parseInt(timeValue) - 1);
+                    document.getElementById("login-time").innerHTML = timeValue;
+                }, 900);
+            }
+
+             function GetQueryString(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+
+            function decodeUnicode(str) {
+                str = str.replace(/\\/g, "%");
+                return unescape(str);
+            }
+    </script>
+</body>
+

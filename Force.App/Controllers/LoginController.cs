@@ -19,6 +19,12 @@ namespace Force.App.Controllers
         // GET: Login
         public ActionResult Index()
         {
+            var UserString = HttpContext.Session.GetString("UserInfo");
+
+            if (!string.IsNullOrEmpty(UserString))
+            {
+                return Redirect("/home/index");
+            }
             return View();
         }
 
@@ -32,7 +38,7 @@ namespace Force.App.Controllers
 
                 if (!string.IsNullOrEmpty(UserString))
                 {
-                    return Redirect("/home/index");
+                    return Json(ResponseHelper.Success(JsonConvert.DeserializeObject<SessionUser>(UserString)));
                 }
                 // TODO: Add login logic here
                 var password = AESUtil.Md5(model.Password);

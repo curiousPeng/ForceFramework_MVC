@@ -55,7 +55,7 @@ namespace PartialHtml.ViewComponents
                 {
                     Children = GetMenu(MenuList, item.Id),
                     MenuCode = item.Id,
-                    MenuIcon = string.IsNullOrEmpty(item.Icon) ? "m-menu__link-bullet--dot" : item.Icon,
+                    MenuIcon = string.IsNullOrEmpty(item.Icon) ? "fa-circle" : item.Icon,
                     MenuName = item.Name,
                     Url = string.IsNullOrEmpty(item.ActionRoute) ? "javascript:;" : item.ActionRoute
                 });
