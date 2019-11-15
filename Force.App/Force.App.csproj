@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Folder Include="Views\SystemMenu\" />
   </ItemGroup>
 
 </Project>

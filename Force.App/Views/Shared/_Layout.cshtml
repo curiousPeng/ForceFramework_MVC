@@ -1,188 +1,131 @@
-﻿@using Force.App.Util;
+﻿@using Force.App
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<!-- begin::Head -->
 <head>
-    <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @if (@ViewData["Title"] != null)
-    {
-        <title>@ViewData["Title"] - 后台系统</title>
-    }
-    else
-    {
-        <title>后台系统</title>
-    }
-    <environment names="Development,Staging,Production">
-
-        <!--模板资源-->
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/pace/pace.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/pace/themes/pace-theme-flash.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/css/google-fonts.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/font-awesome/css/font-awesome.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/simple-line-icons/simple-line-icons.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap/css/bootstrap.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="~/js/plugins/daterangepicker/daterangepicker.css?v=1.0" rel="stylesheet" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/uniform/css/uniform.default.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/fullcalendar/fullcalendar.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-modal/css/bootstrap-modal.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/datatables/datatables.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-up.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/clockface/css/clockface.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery-multi-select/css/multi-select.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/select2/css/select2.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/select2/css/select2-bootstrap.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jstree/dist/themes/default/style.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/css/components.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/css/plugins.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/layout/css/layout.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/layout/css/themes/default.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" id="style_color" />
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/layout/css/custom.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-toastr/toastr.min.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        <link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/morris/morris.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" type="text/css" />
-
-        @*<link href="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" /> *@  @*目前暂未使用*@
-        <!--模板资源结束-->
-        <!--本地资源-->
-        <link href="~/css/site.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" />
-        <link href="~/css/tablecommon.css?v=@ConfigurationManager.AppSettings["Version"]" rel="stylesheet" />
-        <!--本地资源结束-->
-    </environment>
+    <title>
+        Force | @ViewData["Title"]
+    </title>
+    <meta name="description" content="Latest updates and statistic charts">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--begin::Web font -->
+    <script src="~/fonts/js/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: { "families": ["Poppins:300,400,500,600,700", "Roboto:300,400,500,600,700"] },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+    <!--end::Web font -->
+    <!--begin::Base Styles -->
+    <!--begin::Page Vendors -->
+    <link href="~/assets/vendors/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendors -->
+    <link href="~/assets/vendors/base/vendors.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/demo/default/base/style.bundle.css" rel="stylesheet" type="text/css" />
+    <!--end::Base Styles -->
+    <link rel="shortcut icon" href="~/assets/demo/default/media/img/logo/favicon.ico" />
 </head>
-<body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
-    <div class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
+<!-- end::Head -->
+<!-- begin::Body -->
+<body class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
+    <!-- begin:: Page -->
+    <div class="m-grid m-grid--hor m-grid--root m-page">
+        <!-- BEGIN: Header -->
         @await Component.InvokeAsync("Head")
-        <div class="clearfix"> </div>
-        <div class="page-container">
-            @await Component.InvokeAsync("Menu")
-            @RenderBody()
+        <!-- END: Header -->
+        <!-- begin::Body -->
+        <div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
+            <!-- BEGIN: Left Aside -->
+            <button class="m-aside-left-close  m-aside-left-close--skin-dark " id="m_aside_left_close_btn">
+                <i class="la la-close"></i>
+            </button>
+            <div id="m_aside_left" class="m-grid__item	m-aside-left  m-aside-left--skin-dark ">
+                <!-- BEGIN: Aside Menu -->
+                @await Component.InvokeAsync("Menu")
+                <!-- END: Aside Menu -->
+            </div>
+            <!-- END: Left Aside -->
+            <div class="m-grid__item m-grid__item--fluid m-wrapper">
+                <!-- BEGIN: Subheader -->
+                @await Html.PartialAsync("_SubHeader")
+                <!-- END: Subheader -->
+                <div class="m-content">
+                    <!--正式内容 begin-->
+                    @RenderBody()
+                    <!--正式内容 end-->
+                </div>
+            </div>
         </div>
-
+        <!-- end:: Body -->
+        <!-- begin::Footer -->
         @await Html.PartialAsync("_Footer")
-
-        <!--[if lt IE 9]>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/respond.min.js"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/excanvas.min.js"></script>
-        <![endif]-->
-        <!--本地资源-->
-        <script src="~/lib/modules.manager.js?v=@ConfigurationManager.AppSettings["Version"]"></script>
-        <script src="~/lib/emuns.module.js?v=@ConfigurationManager.AppSettings["Version"]"></script>
-        <script src="~/lib/async.caller.module.js?v=@ConfigurationManager.AppSettings["Version"]"></script>
-        <!--本地资源结束-->
-        <!--模板资源-->
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap/js/bootstrap.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/js.cookie.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery.blockui.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/uniform/jquery.uniform.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-modal/js/bootstrap-modalmanager.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-modal/js/bootstrap-modal.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/scripts/datatable.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/datatables/datatables-one-up.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery-validation/js/jquery.validate.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery-validation/js/additional-methods.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/moment.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/clockface/js/clockface.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="~/js/plugins/fileinput/fileinput.js?v=@ConfigurationManager.AppSettings["Version"]"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/fullcalendar/fullcalendar.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-markdown/lib/markdown.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-summernote/summernote.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="~/js/jquery.quicksearch.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/counterup/jquery.waypoints.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/counterup/jquery.counterup.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-toastr/toastr.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/select2/js/select2.full.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/fuelux/js/spinner.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jstree/dist/jstree.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/scripts/app.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/update/BaseFuntion.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/apps/scripts/calendar.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/pages/scripts/components-date-time-pickers.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/pages/scripts/ui-confirmations.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/layout/scripts/layout.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/layout/scripts/demo.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/layouts/global/scripts/quick-sidebar.min.js?v=@ConfigurationManager.AppSettings["Version"]" type="text/javascript"></script>
-        <!--模板资源结束-->
-        <!--配置和公用函数初始化-->
-        <script src="~/js/cache/cache.js?v=1.0"></script>
-        <script src="~/js/mainInit.js?v=1.0"></script>
-        <script src="~/js/config/appsettings.js?v=@ConfigurationManager.AppSettings["Version"]&environment=@ConfigurationManager.AppSettings["Environment"]"></script>
-        <!--配置和公用函数初始化结束-->
-        <!--时间插件初始化-->
-        <script src="~/js/plugins/daterangepicker/libs/moment.js/2.22.1/moment.js?v=@ConfigurationManager.AppSettings["Version"]"></script>
-        <script src="~/js/plugins/daterangepicker/datepickerInit.js?v=@ConfigurationManager.AppSettings["Version"]"></script>
-        <!--时间插件初始化结束-->
-
-        <script type="text/javascript">
-            $(function () {
-                var href = window.location.pathname;
-                // alert(href);
-                $(".nav-item a").each(function () {
-                    var url = $(this).attr("href");
-                    //alert(url);
-                    $(this).parent("li").removeClass("active");
-                    $(this).parent("li").removeClass("open");
-                    $(this).parent().parent().parent("li").removeClass("active");
-                    $(this).parent().parent().parent("li").removeClass("open");
-                    $(this).parent().parent().parent("li").find(".arrow").removeClass("open");
-                    if (href.toLowerCase() == url.toLowerCase()) {
-                        //alert($(this).parent("li").text());
-                        $(this).parent("li").addClass("active");
-                        $(this).parent("li").addClass("open");
-                        $(this).parent().parent().parent("li").addClass("active");
-                        $(this).parent().parent().parent("li").addClass("open");
-                        $(this).parent().parent().parent("li").find(".arrow").addClass("open");
-                        return false;
-                    }
-                });
-            });
-        </script>
+        <!-- end::Footer -->
     </div>
+    <!-- end:: Page -->
+    <!-- begin::Quick Sidebar -->
+    <div id="m_quick_sidebar" class="m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light">
+        <div class="m-quick-sidebar__content m--hide">
+            <span id="m_quick_sidebar_close" class="m-quick-sidebar__close">
+                <i class="la la-close"></i>
+            </span>
+            <ul id="m_quick_sidebar_tabs" class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand" role="tablist">
+                <li class="nav-item m-tabs__item">
+                    <a class="nav-link m-tabs__link active" data-toggle="tab" href="#m_quick_sidebar_tabs_messenger" role="tab">
+                        Messages
+                    </a>
+                </li>
+                <li class="nav-item m-tabs__item">
+                    <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_quick_sidebar_tabs_settings" role="tab">
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item m-tabs__item">
+                    <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_quick_sidebar_tabs_logs" role="tab">
+                        Logs
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active m-scrollable" id="m_quick_sidebar_tabs_messenger" role="tabpanel">
+                    111
+                </div>
+                <div class="tab-pane  m-scrollable" id="m_quick_sidebar_tabs_settings" role="tabpanel">
+                    <div class="m-list-settings">
+                        222
+                    </div>
+                </div>
+                <div class="tab-pane  m-scrollable" id="m_quick_sidebar_tabs_logs" role="tabpanel">
+                    <div class="m-list-timeline">
+                        333
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end::Quick Sidebar -->
+    <!-- begin::Scroll Top -->
+    <div id="m_scroll_top" class="m-scroll-top">
+        <i class="la la-arrow-up"></i>
+    </div>
+    <!-- end::Scroll Top -->  
+    <!-- begin::Quick Nav -->
+    @await Html.PartialAsync("_NavSticky")
+    <!-- begin::Quick Nav -->
+    <!--begin::Base Scripts -->
+    <script src="../assets/vendors/base/vendors.bundle.js" type="text/javascript"></script>
+    <script src="../assets/demo/default/base/scripts.bundle.js" type="text/javascript"></script>
+    <!--end::Base Scripts -->
+    <!--begin::Page Vendors -->
 
+    <!--end::Page Vendors -->
+    <!--begin::Page Resources -->
+    <script src="~/assets/app/js/dashboard.js" type="text/javascript"></script>
+    <!--end::Page Resources -->
 </body>
+<!-- end::Body -->
 </html>

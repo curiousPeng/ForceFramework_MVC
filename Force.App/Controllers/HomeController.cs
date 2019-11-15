@@ -34,16 +34,12 @@ namespace Force.App.Controllers
                     return View("Error");
             }
         }
-        public ActionResult ErrorMessage(int? id)
+
+        // POST: Home/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create()
         {
-            if (id != null)
-            {
-                ViewBag.type = id.Value;
-            }
-            else
-            {
-                ViewBag.type = 0;
-            }
             return View();
         }
     }
