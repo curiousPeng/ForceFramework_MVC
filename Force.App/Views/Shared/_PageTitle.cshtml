@@ -1,0 +1,9 @@
+﻿@using Force.Model.ViewModel.SubHeader;
+@{
+
+    var SubHeader = ViewData["SubHeader"] as SubHeader;
+}
+<h3 class="page-title">
+    @SubHeader.PageTitle
+    <small>@SubHeader.SubPageTitle</small>
+</h3>

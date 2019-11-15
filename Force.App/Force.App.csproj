@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="NLog" Version="4.6.7" />
@@ -40,6 +44,9 @@
     <Content Update="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +57,8 @@
     <None Include="Views\Login\Index.cshtml" />
     <None Include="Views\Shared\Components\Head\Default.cshtml" />
     <None Include="Views\Shared\Components\Menu\Default.cshtml" />
+    <None Include="wwwroot\assets\demo\default\base\scripts.bundle.js" />
+    <None Include="wwwroot\assets\vendors\base\vendors.bundle.js" />
   </ItemGroup>
 
   <ItemGroup>

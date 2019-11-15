@@ -33,7 +33,7 @@ namespace Force.App.Filter
         {
             if (!context.ModelState.IsValid)
             {
-                var result = new MResponse<string>();
+                var result = new MResponse<string> { Code = 110 };
                 foreach (var item in context.ModelState.Values)
                 {
                     foreach (var error in item.Errors)
