@@ -1,0 +1,121 @@
+﻿@model Force.Model.SystemMenu
+@{
+    Layout = null;
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title"><span>修改菜单-@Model.Name</span> </h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        @Html.AntiForgeryToken()
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="col-md-3 control-label">上级code ： </label>
+                <div class="col-md-9 form-group">
+                    <input class="form-control parentcode" value="@Model.ParentId" placeholder="上级code" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">菜单名称 ： </label>
+                <div class="col-md-9 form-group">
+                    <input class="form-control controllname" value="@Model.Name" placeholder="菜单名称" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">地址 ： </label>
+                <div class="col-md-9 form-group">
+                    <input class="form-control controllurl" value="@Model.ActionRoute" placeholder="菜单地址" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Icon ： </label>
+                <div class="col-md-9 form-group">
+                    <input class="form-control icon" value="@Model.Icon" placeholder="Icon" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">排序 ： </label>
+                <div class="col-md-9 form-group">
+                    <input class="form-control sort" value="@Model.Sort" placeholder="0" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="title">菜单类型 ： </label>
+                <div class="col-xs-9 form-group">
+                    <select name="controlltype" id="controlltype" class="source-type bs-select form-control">
+                        <option value="1" @(Model.Type= =1??"select":"")>菜单</option>
+                        <option value="2" @(Model.Type= =2??"select":"")>新增</option>
+                        <option value="3" @(Model.Type= =3??"select":"")>编辑</option>
+                        <option value="4" @(Model.Type= =4??"select":"")>删除</option>
+                        <option value="5" @(Model.Type= =5??"select":"")>查询</option>
+                        <option value="6" @(Model.Type= =6??"select":"")>页面</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="title">是否启用 ： </label>
+                <div class="col-xs-9 form-group">
+                    <select name="isUse" id="isUse" class="source-type bs-select form-control">
+                        <option value="1" @(Model.IsUse= =1?"select":"")>是</option>
+                        <option value="0" @(Model.IsUse= =0?"select":"")>否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">菜单说明 ： </label>
+                <div class="col-md-9 form-group">
+                    <textarea id="textarea_1" class="form-control value" maxlength="500" rows="3" placeholder="菜单说明（最多输入500个字符）">@Model.Remark</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <input value="@Model.Id" id="code" type="hidden" />
+    <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+    <button class="btn blue submit-data" type="button">保存</button>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(".submit-data").click(function () {
+            var parentcode = $(".parentcode").val();
+            var controllname = $(".controllname").val();
+            var controllurl = $(".controllurl").val();
+            var icon = $(".icon").val();
+            var sort = $(".sort").val();
+            var controlltype = $("#controlltype").val();
+            var remark = $(".value").val();
+            var status = $("#isUse").val();
+            var code = $("#code").val();
+            var token = $("input[name='__RequestVerificationToken']").val();
+            App.blockUI();
+            if (parentcode == "" || controllname == "" || sort == "" || remark == "") {
+                App.unblockUI();
+                AddAlert("danger", "请将表单填写完整！");
+                return false;
+            }
+            $.ajax({
+                url: "/Auth/save",
+                data: { __RequestVerificationToken: token, status: status, parentcode: parentcode, controllname: controllname, controllurl: controllurl, icon: icon, sort: sort, controlltype: controlltype, remark: remark, code: code },
+                dataType: "json",
+                type: "post",
+                success: function (result) {
+                    App.unblockUI();
+                    if (result.status == 1) {
+                        AddAlert("success", "修改成功啦~");
+                        window.location.reload();
+                    } else {
+                        if (result.msg) {
+                            AddAlert("danger", result.msg);
+                        } else {
+                            AddAlert("danger", "修改失败！");
+                        }
+                    }
+                }
+            })
+
+        });
+    });
+</script>
+

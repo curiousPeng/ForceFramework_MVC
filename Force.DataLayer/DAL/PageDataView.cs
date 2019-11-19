@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Force.DataLayer.Base
+namespace DataLayer.Base
 {
     public class PageDataView<T>
     {

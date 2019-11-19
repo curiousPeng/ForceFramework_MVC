@@ -1,23 +1,23 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 10:47:41
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
-using Dapper;
-using Force.DataLayer.Base;
-using Force.DataLayer.Metadata;
-using Force.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Dapper;
+using System.Data.SqlClient;
+using DataLayer.Base;
+using Force.Model;
+using Force.DataLayer.Metadata;
 
 namespace Force.DataLayer
 {
-    namespace Metadata
-    {
-        public sealed class SystemMenuColumn : IColumn
+	namespace Metadata
+	{
+		public sealed class SystemMenuColumn : IColumn
 		{
 			internal SystemMenuColumn(string table, string name)
 			{
@@ -61,16 +61,14 @@ namespace Force.DataLayer
 			public static readonly SystemMenuColumn Id = new SystemMenuColumn("SystemMenu", "Id");
 			public static readonly SystemMenuColumn Name = new SystemMenuColumn("SystemMenu", "Name");
 			public static readonly SystemMenuColumn ParentId = new SystemMenuColumn("SystemMenu", "ParentId");
-			public static readonly SystemMenuColumn ParentList = new SystemMenuColumn("SystemMenu", "ParentList");
 			public static readonly SystemMenuColumn ActionRoute = new SystemMenuColumn("SystemMenu", "ActionRoute");
 			public static readonly SystemMenuColumn Icon = new SystemMenuColumn("SystemMenu", "Icon");
 			public static readonly SystemMenuColumn Type = new SystemMenuColumn("SystemMenu", "Type");
 			public static readonly SystemMenuColumn Sort = new SystemMenuColumn("SystemMenu", "Sort");
-			public static readonly SystemMenuColumn Depth = new SystemMenuColumn("SystemMenu", "Depth");
 			public static readonly SystemMenuColumn IsUse = new SystemMenuColumn("SystemMenu", "IsUse");
 			public static readonly SystemMenuColumn Remark = new SystemMenuColumn("SystemMenu", "Remark");
 			public static readonly SystemMenuColumn CreatedTime = new SystemMenuColumn("SystemMenu", "CreatedTime");
-			public static readonly List<SystemMenuColumn> All = new List<SystemMenuColumn> { Id, Name, ParentId, ParentList, ActionRoute, Icon, @Type, Sort, Depth, IsUse, Remark, CreatedTime };
+			public static readonly List<SystemMenuColumn> All = new List<SystemMenuColumn> { Id, Name, ParentId, ActionRoute, Icon, @Type, Sort, IsUse, Remark, CreatedTime };
 		}
 
 		/// <summary>
@@ -120,9 +118,9 @@ namespace Force.DataLayer
         public static int Insert(SystemMenu model, SqlConnection conn = null, SqlTransaction transaction = null)
         {
             var sql = new StringBuilder();
-            sql.Append("INSERT INTO [SystemMenu]([Name], [ParentId], [ParentList], [ActionRoute], [Icon], [Type], [Sort], [Depth], [IsUse], [Remark], [CreatedTime])");
+            sql.Append("INSERT INTO [SystemMenu]([Name], [ParentId], [ActionRoute], [Icon], [Type], [Sort], [IsUse], [Remark], [CreatedTime])");
             sql.Append(" OUTPUT INSERTED.[Id] ");
-            sql.Append("VALUES(@Name, @ParentId, @ParentList, @ActionRoute, @Icon, @Type, @Sort, @Depth, @IsUse, @Remark, @CreatedTime)");
+            sql.Append("VALUES(@Name, @ParentId, @ActionRoute, @Icon, @Type, @Sort, @IsUse, @Remark, @CreatedTime)");
             var ret = 0;
             if (conn != null)
             {
@@ -356,7 +354,7 @@ namespace Force.DataLayer
             sql.Append("UPDATE [SystemMenu]");
             if (fields == null || fields.Length == 0)
             {
-                 sql.Append(" SET [Name] = @Name, [ParentId] = @ParentId, [ParentList] = @ParentList, [ActionRoute] = @ActionRoute, [Icon] = @Icon, [Type] = @Type, [Sort] = @Sort, [Depth] = @Depth, [IsUse] = @IsUse, [Remark] = @Remark");
+                 sql.Append(" SET [Name] = @Name, [ParentId] = @ParentId, [ActionRoute] = @ActionRoute, [Icon] = @Icon, [Type] = @Type, [Sort] = @Sort, [IsUse] = @IsUse, [Remark] = @Remark, [CreatedTime] = @CreatedTime");
             }
             else
             {
@@ -412,7 +410,7 @@ namespace Force.DataLayer
         public static SystemMenu GetModel(int Id)
         {
             var sql = new StringBuilder();
-            sql.Append("SELECT TOP 1 [Id], [Name], [ParentId], [ParentList], [ActionRoute], [Icon], [Type], [Sort], [Depth], [IsUse], [Remark], [CreatedTime] FROM [SystemMenu] ");
+            sql.Append("SELECT TOP 1 [Id], [Name], [ParentId], [ActionRoute], [Icon], [Type], [Sort], [IsUse], [Remark], [CreatedTime] FROM [SystemMenu] ");
             sql.Append(" WHERE [Id]=@Id ");
             SystemMenu ret = null;
             using (var conn = GetOpenConnection())

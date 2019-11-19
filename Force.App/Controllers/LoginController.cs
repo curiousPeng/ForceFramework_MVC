@@ -63,7 +63,7 @@ namespace Force.App.Controllers
                     HeadImg = user.HeadImage,
                     Token = token,
                     UId = user.Id.ToString(),
-                    UserName = user.Account,
+                    UserName = user.NickName,
                     RoleId = role.Id,
                     Email = user.Email,
                     RoleName = role.Name,

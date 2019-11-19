@@ -1,23 +1,23 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 10:47:41
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
-using Dapper;
-using Force.DataLayer.Base;
-using Force.DataLayer.Metadata;
-using Force.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Dapper;
+using System.Data.SqlClient;
+using DataLayer.Base;
+using Force.Model;
+using Force.DataLayer.Metadata;
 
 namespace Force.DataLayer
 {
-    namespace Metadata
-    {
-        public sealed class SystemUserColumn : IColumn
+	namespace Metadata
+	{
+		public sealed class SystemUserColumn : IColumn
 		{
 			internal SystemUserColumn(string table, string name)
 			{
@@ -60,13 +60,14 @@ namespace Force.DataLayer
 		{
 			public static readonly SystemUserColumn Id = new SystemUserColumn("SystemUser", "Id");
 			public static readonly SystemUserColumn Account = new SystemUserColumn("SystemUser", "Account");
+			public static readonly SystemUserColumn NickName = new SystemUserColumn("SystemUser", "NickName");
 			public static readonly SystemUserColumn Email = new SystemUserColumn("SystemUser", "Email");
 			public static readonly SystemUserColumn Password = new SystemUserColumn("SystemUser", "Password");
 			public static readonly SystemUserColumn Phone = new SystemUserColumn("SystemUser", "Phone");
 			public static readonly SystemUserColumn HeadImage = new SystemUserColumn("SystemUser", "HeadImage");
 			public static readonly SystemUserColumn Status = new SystemUserColumn("SystemUser", "Status");
 			public static readonly SystemUserColumn CreatedTime = new SystemUserColumn("SystemUser", "CreatedTime");
-			public static readonly List<SystemUserColumn> All = new List<SystemUserColumn> { Id, Account, Email, Password, Phone, HeadImage, Status, CreatedTime };
+			public static readonly List<SystemUserColumn> All = new List<SystemUserColumn> { Id, Account, NickName, Email, Password, Phone, HeadImage, Status, CreatedTime };
 		}
 
 		/// <summary>
@@ -116,9 +117,9 @@ namespace Force.DataLayer
         public static int Insert(SystemUser model, SqlConnection conn = null, SqlTransaction transaction = null)
         {
             var sql = new StringBuilder();
-            sql.Append("INSERT INTO [SystemUser]([Account], [Email], [Password], [Phone], [HeadImage], [Status], [CreatedTime])");
+            sql.Append("INSERT INTO [SystemUser]([Account], [NickName], [Email], [Password], [Phone], [HeadImage], [Status], [CreatedTime])");
             sql.Append(" OUTPUT INSERTED.[Id] ");
-            sql.Append("VALUES(@Account, @Email, @Password, @Phone, @HeadImage, @Status, @CreatedTime)");
+            sql.Append("VALUES(@Account, @NickName, @Email, @Password, @Phone, @HeadImage, @Status, @CreatedTime)");
             var ret = 0;
             if (conn != null)
             {
@@ -352,7 +353,7 @@ namespace Force.DataLayer
             sql.Append("UPDATE [SystemUser]");
             if (fields == null || fields.Length == 0)
             {
-                 sql.Append(" SET [Account] = @Account, [Email] = @Email, [Password] = @Password, [Phone] = @Phone, [HeadImage] = @HeadImage, [Status] = @Status");
+                 sql.Append(" SET [Account] = @Account, [NickName] = @NickName, [Email] = @Email, [Password] = @Password, [Phone] = @Phone, [HeadImage] = @HeadImage, [Status] = @Status, [CreatedTime] = @CreatedTime");
             }
             else
             {
@@ -408,7 +409,7 @@ namespace Force.DataLayer
         public static SystemUser GetModel(int Id)
         {
             var sql = new StringBuilder();
-            sql.Append("SELECT TOP 1 [Id], [Account], [Email], [Password], [Phone], [HeadImage], [Status], [CreatedTime] FROM [SystemUser] ");
+            sql.Append("SELECT TOP 1 [Id], [Account], [NickName], [Email], [Password], [Phone], [HeadImage], [Status], [CreatedTime] FROM [SystemUser] ");
             sql.Append(" WHERE [Id]=@Id ");
             SystemUser ret = null;
             using (var conn = GetOpenConnection())

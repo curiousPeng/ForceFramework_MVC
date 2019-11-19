@@ -1,0 +1,204 @@
+﻿@model List<Force.Model.ViewModel.Menu.MenuViewModel>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-dark">
+                    <i class="icon-settings font-dark"></i>
+                    <span class="caption-subject bold uppercase">Buttons</span>
+                </div>
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-xs-1">
+                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemmenu/add" data-toggle="modal">新增 <i class="fa fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>菜单名称</th>
+                                <th>链接</th>
+                                <th>ICON</th>
+                                <th>菜单介绍</th>
+                                <th>状态</th>
+                                <th>排序</th>
+                                <th>类型</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-left"><i class="@item.MenuIcon"></i> @item.MenuName</td>
+                                        <td>@item.MenuUrl</td>
+                                        <td>@item.MenuIcon</td>
+                                        <td>@item.Remark</td>
+                                        <td>
+                                            @switch (item.Status)
+                                            {
+                                                case 0:
+                                                    <span class="label label-danger" data-status="@item.Status">否</span>
+                                                    break;
+                                                case 1:
+                                                    <span class="label label-success" data-status="@item.Status">是</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>@item.Sort</td>
+                                        <td>
+                                            @item.MenuType
+                                        </td>
+
+                                        <td>
+                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@item.MenuCode" data-toggle="modal">编辑</span>
+                                            @if (item.Status == 0)
+                                            {
+                                                <span class="label label-sm label-danger" href="javascript:;" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要使用此菜单" data-status="1" data-id="@item.MenuCode" data-popout="true">使用</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@item.MenuCode" data-popout="true">停用</span>
+                                            }
+                                            <span class="label label-sm label-success" onclick="modal_click(this);" data-url="/systemmenu/add?code=@item.MenuCode" data-toggle="modal">新增</span>
+                                        </td>
+                                    </tr>
+                                    @if (item.Children.Count > 0)
+                                    {
+                                        foreach (var v in item.Children)
+                                        {
+                                            <tr>
+                                                <td class="text-left"><span class="padding-left-2"></span><i class="@v.MenuIcon"></i>@v.MenuName</td>
+                                                <td>@v.MenuUrl</td>
+                                                <td>@v.MenuIcon</td>
+                                                <td>@v.Remark</td>
+                                                <td class="td-status">
+                                                    @switch (v.Status)
+                                                    {
+                                                        case 0:
+                                                            <span class="label label-danger" data-status="@v.Status">否</span>
+                                                            break;
+                                                        case 1:
+                                                            <span class="label label-success" data-status="@v.Status">是</span>
+                                                            break;
+                                                    }
+                                                </td>
+                                                <td>@v.Sort</td>
+                                                <td>
+                                                    @item.MenuType
+                                                </td>
+                                                <td>
+                                                    <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@v.MenuCode" data-toggle="modal">编辑</span>
+                                                    @if (v.Status == 0)
+                                                    {
+                                                        <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要使用此菜单" data-status="1" data-id="@v.MenuCode" data-popout="true">使用</span>
+                                                    }
+                                                    else
+                                                    {
+                                                    <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@v.MenuCode" data-popout="true">停用</span>
+                                                    }
+                                                    <span class="label label-sm label-success" onclick="modal_click(this);" data-url="/systemmenu/add?code=@v.MenuCode" data-toggle="modal">新增</span>
+                                                </td>
+                                            </tr>
+                                            @if (v.Children.Count > 0)
+                                            {
+                                                foreach (var vv in v.Children)
+                                                {
+                                                    <tr>
+                                                        <td class="text-left"><span class="padding-left-4"></span><i class="@vv.MenuIcon"></i>@vv.MenuName</td>
+                                                        <td>@vv.MenuUrl</td>
+                                                        <td>@vv.MenuIcon</td>
+                                                        <td>@vv.Remark</td>
+                                                        <td class="td-status">
+                                                            @switch (vv.Status)
+                                                            {
+                                                                case 0:
+                                                                    <span class="label label-danger" data-status="@vv.Status">否</span>
+                                                                    break;
+                                                                case 1:
+                                                                    <span class="label label-success" data-status="@vv.Status">是</span>
+                                                                    break;
+                                                            }
+                                                        </td>
+                                                        <td>@vv.Sort</td>
+                                                        <td>
+                                                            @item.MenuType
+                                                        </td>
+                                                        <td>
+                                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@vv.MenuCode" data-toggle="modal">编辑</span>
+                                                            @if (vv.Status == 0)
+                                                            {
+                                                        <span class="label label-sm label-danger" onmouseover="operation(this)" data-container="body" data-toggle="confirmation-changestatus" data-value="id,status" data-placement="top" data-original-title="是否要使用此菜单" data-status="1" data-id="@vv.MenuCode" data-popout="true">使用</span>
+                                                            }
+                                                            else
+                                                            {
+                                                        <span class="label label-sm label-danger" onmouseover="operation(this" data-container="body" data-toggle="confirmation-changestatus" data-value="id,status" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@vv.MenuCode" data-popout="true">停用</span>
+                                                            }
+                                                        </td>
+                                                    </tr>
+
+                                                }
+
+                                            }
+                                        }
+
+                                    }
+                                } }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //auth_list_reload();
+        //$(".action-submit").click(function () {
+        //    _table_auth.api().draw(false);
+        //})
+        operation();
+    });
+    function operation() {
+        $("[data-toggle='confirmation-changestatus']").confirmation({
+            singleton: true,
+            popout: true,
+            btnOkLabel: '是',
+            btnCancelLabel: '否',
+            onConfirm: function () {
+                App.blockUI();
+                $.ajax({
+                    url: "/systemmenu/changestatus",
+                    data: { "id": $(this).data("id"), "status": $(this).data("status") },
+                    dataType: "json",
+                    type: "POST",
+                    success: function (result) {
+                        App.unblockUI();
+                        if (result.status == 1) {
+                            addAlert("#bootstrap_alerts_demo", "success", "操作成功啦~");
+                            window.location.reload();
+                        } else {
+                            if (result.msg) {
+                                addAlert("#bootstrap_alerts_demo", "danger", result.msg);
+                            } else {
+                                addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                            }
+                        }
+                    },
+                    error: function () {
+                        App.unblockUI();
+                        addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                    }
+                })
+            }
+        });
+
+    }
+</script>

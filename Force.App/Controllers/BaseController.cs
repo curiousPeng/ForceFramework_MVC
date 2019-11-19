@@ -1,22 +1,25 @@
 ﻿using Force.Common.LightMessager.Helper;
 using Force.Common.RedisTool.Helper;
 using Force.DataLayer;
+using Force.Model.ViewModel.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using NLog;
 
 namespace Force.App.Controllers
 {
-    public class BaseController: Controller
+    public class BaseController : Controller
     {
         private HttpContext _http_context;
         protected static Logger logger = LogManager.GetCurrentClassLogger();
         private IMemoryCache _cache;
         private IRedisHelper _redis_helper;
         private IRabbitMQProducer _rabbitmq;
+        private SessionUser _cache_user;
         public BaseController(IHttpContextAccessor httpContextAccessor)
         {
             _http_context = httpContextAccessor.HttpContext;
@@ -26,6 +29,13 @@ namespace Force.App.Controllers
             get
             {
                 return _cache ?? (_cache = _http_context.RequestServices.GetService<IMemoryCache>());
+            }
+        }
+        protected SessionUser CacheUser
+        {
+            get
+            {
+                return _cache_user ?? (_cache_user = JsonConvert.DeserializeObject<SessionUser>(HttpContext.Session.GetString("UserInfo")));
             }
         }
         protected IRedisHelper RedisHlper

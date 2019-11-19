@@ -17,9 +17,9 @@ namespace Force.DataLayer
 {
 	namespace Metadata
 	{
-		public sealed class SystemRoleColumn : IColumn
+		public sealed class UploadFileInfoColumn : IColumn
 		{
-			internal SystemRoleColumn(string table, string name)
+			internal UploadFileInfoColumn(string table, string name)
 			{
 				Table = table;
 				Name = name;
@@ -34,16 +34,16 @@ namespace Force.DataLayer
 			private bool _asc;
 			public string Asc { get { return this._asc ? "ASC" : "DESC"; } }
 
-			public SystemRoleColumn SetAddEqual() { IsAddEqual ^= true; return this; }
+			public UploadFileInfoColumn SetAddEqual() { IsAddEqual ^= true; return this; }
 
-			public SystemRoleColumn SetOrderByAsc() { this._asc = true; return this; }
+			public UploadFileInfoColumn SetOrderByAsc() { this._asc = true; return this; }
 
-			public SystemRoleColumn SetOrderByDesc() { this._asc = false; return this; }
+			public UploadFileInfoColumn SetOrderByDesc() { this._asc = false; return this; }
 		}
 
-		public sealed class SystemRoleTable
+		public sealed class UploadFileInfoTable
 		{
-			internal SystemRoleTable(string name)
+			internal UploadFileInfoTable(string name)
 			{
 				Name = name;
 			}
@@ -52,28 +52,33 @@ namespace Force.DataLayer
 		}
 	}
 
-	public partial class SystemRoleHelper : BaseTableHelper
+	public partial class UploadFileInfoHelper : BaseTableHelper
 	{
-		public static readonly SystemRoleTable Table = new SystemRoleTable("SystemRole");
+		public static readonly UploadFileInfoTable Table = new UploadFileInfoTable("UploadFileInfo");
 
 		public sealed class Columns
 		{
-			public static readonly SystemRoleColumn Id = new SystemRoleColumn("SystemRole", "Id");
-			public static readonly SystemRoleColumn Name = new SystemRoleColumn("SystemRole", "Name");
-			public static readonly SystemRoleColumn Remark = new SystemRoleColumn("SystemRole", "Remark");
-			public static readonly SystemRoleColumn CreatedTime = new SystemRoleColumn("SystemRole", "CreatedTime");
-			public static readonly List<SystemRoleColumn> All = new List<SystemRoleColumn> { Id, Name, Remark, CreatedTime };
+			public static readonly UploadFileInfoColumn Id = new UploadFileInfoColumn("UploadFileInfo", "Id");
+			public static readonly UploadFileInfoColumn Name = new UploadFileInfoColumn("UploadFileInfo", "Name");
+			public static readonly UploadFileInfoColumn URL = new UploadFileInfoColumn("UploadFileInfo", "URL");
+			public static readonly UploadFileInfoColumn Source = new UploadFileInfoColumn("UploadFileInfo", "Source");
+			public static readonly UploadFileInfoColumn Type = new UploadFileInfoColumn("UploadFileInfo", "Type");
+			public static readonly UploadFileInfoColumn IsUse = new UploadFileInfoColumn("UploadFileInfo", "IsUse");
+			public static readonly UploadFileInfoColumn HashVal = new UploadFileInfoColumn("UploadFileInfo", "HashVal");
+			public static readonly UploadFileInfoColumn PhysicalPath = new UploadFileInfoColumn("UploadFileInfo", "PhysicalPath");
+			public static readonly UploadFileInfoColumn CreatedTime = new UploadFileInfoColumn("UploadFileInfo", "CreatedTime");
+			public static readonly List<UploadFileInfoColumn> All = new List<UploadFileInfoColumn> { Id, Name, URL, Source, @Type, IsUse, HashVal, PhysicalPath, CreatedTime };
 		}
 
 		/// <summary>
-		/// 是否存在指定的SystemRole实体对象
+		/// 是否存在指定的UploadFileInfo实体对象
 		/// </summary>
 		/// <param name="Id">Id</param>
 		/// <returns>是否存在，true为存在</returns>
 		public static bool Exists(int Id)
 		{
 			var sql = new StringBuilder();
-			sql.Append("SELECT COUNT(1) FROM [SystemRole]");
+			sql.Append("SELECT COUNT(1) FROM [UploadFileInfo]");
 			sql.Append(" WHERE [Id]=@Id ");
 			var ret = false;
 			using (var conn = GetOpenConnection())
@@ -85,15 +90,15 @@ namespace Force.DataLayer
 		}
 
 		/// <summary>
-		/// 是否存在指定的SystemRole实体对象
+		/// 是否存在指定的UploadFileInfo实体对象
 		/// </summary>
-		public static bool Exists(Expression<Func<SystemRole, bool>> predicate)
+		public static bool Exists(Expression<Func<UploadFileInfo, bool>> predicate)
 		{
 			var parser = new PredicateParser();
             var where_str = parser.Parse(predicate);
 
             var sql = new StringBuilder();
-            sql.Append("SELECT COUNT(1) FROM [SystemRole]");
+            sql.Append("SELECT COUNT(1) FROM [UploadFileInfo]");
             sql.Append(" WHERE " + where_str);
             var ret = false;
             using (var conn = GetOpenConnection())
@@ -105,16 +110,16 @@ namespace Force.DataLayer
 		}
 
 		/// <summary>
-        /// 添加新SystemRole记录
+        /// 添加新UploadFileInfo记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
         /// <returns>新插入数据的id</returns>
-        public static int Insert(SystemRole model, SqlConnection conn = null, SqlTransaction transaction = null)
+        public static int Insert(UploadFileInfo model, SqlConnection conn = null, SqlTransaction transaction = null)
         {
             var sql = new StringBuilder();
-            sql.Append("INSERT INTO [SystemRole]([Name], [Remark], [CreatedTime])");
+            sql.Append("INSERT INTO [UploadFileInfo]([Name], [URL], [Source], [Type], [IsUse], [HashVal], [PhysicalPath], [CreatedTime])");
             sql.Append(" OUTPUT INSERTED.[Id] ");
-            sql.Append("VALUES(@Name, @Remark, @CreatedTime)");
+            sql.Append("VALUES(@Name, @URL, @Source, @Type, @IsUse, @HashVal, @PhysicalPath, @CreatedTime)");
             var ret = 0;
             if (conn != null)
             {
@@ -136,14 +141,14 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 删除指定的SystemRole数据记录
+        /// 删除指定的UploadFileInfo数据记录
         /// </summary>
 		/// <param name="Id">Id</param>
         /// <returns>是否成功，true为成功</returns>
         public static bool Delete(int Id)
         {
             var sql = new StringBuilder();
-            sql.Append("DELETE FROM [SystemRole] ");
+            sql.Append("DELETE FROM [UploadFileInfo] ");
             sql.Append(" WHERE [Id]=@Id ");
             var ret = false;
             using (var conn = GetOpenConnection())
@@ -155,9 +160,9 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 删除指定的SystemRole数据记录
+        /// 删除指定的UploadFileInfo数据记录
         /// </summary>
-        public static bool Delete(Expression<Func<SystemRole, bool>> predicate = null)
+        public static bool Delete(Expression<Func<UploadFileInfo, bool>> predicate = null)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -167,7 +172,7 @@ namespace Force.DataLayer
 			}
 			
             var sql = new StringBuilder();
-            sql.Append("DELETE FROM [SystemRole]");
+            sql.Append("DELETE FROM [UploadFileInfo]");
 			if (where_str != string.Empty)
 				sql.Append(" WHERE " + where_str);
             var ret = false;
@@ -180,14 +185,14 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 批量删除指定的SystemRole数据记录
+        /// 批量删除指定的UploadFileInfo数据记录
         /// </summary>
-        /// <param name="Ids">SystemRole实体对象的id列表</param>
+        /// <param name="Ids">UploadFileInfo实体对象的id列表</param>
         /// <returns>是否成功，true为成功</returns>
         public static bool Delete(List<int> Ids)
         {
             var sql = new StringBuilder();
-            sql.Append("DELETE FROM [SystemRole] ");
+            sql.Append("DELETE FROM [UploadFileInfo] ");
             sql.Append(" WHERE [Id] IN @ids");
             var ret = false;
             using (var conn = GetOpenConnection())
@@ -199,13 +204,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -217,13 +222,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, bool reverse, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, bool reverse, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -235,13 +240,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, SqlConnection conn, SqlTransaction transaction, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, SqlConnection conn, SqlTransaction transaction, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -253,13 +258,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, bool reverse, SqlConnection conn, SqlTransaction transaction, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, bool reverse, SqlConnection conn, SqlTransaction transaction, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -271,13 +276,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, Expression<Func<SystemRole, bool>> predicate, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, Expression<Func<UploadFileInfo, bool>> predicate, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -289,13 +294,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, Expression<Func<SystemRole, bool>> predicate, bool reverse, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, Expression<Func<UploadFileInfo, bool>> predicate, bool reverse, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -307,13 +312,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, Expression<Func<SystemRole, bool>> predicate, SqlConnection conn, SqlTransaction transaction, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, Expression<Func<UploadFileInfo, bool>> predicate, SqlConnection conn, SqlTransaction transaction, params UploadFileInfoColumn[] fields)
         {
             return Update(
 				model: model, 
@@ -325,13 +330,13 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 更新SystemRole数据记录
+        /// 更新UploadFileInfo数据记录
         /// </summary>
-        /// <param name="model">SystemRole实体对象</param>
+        /// <param name="model">UploadFileInfo实体对象</param>
 		/// <param name="fields">需要更新的字段名字</param>
 		/// <param name="reverse">反转给定的更新字段</param>
         /// <returns>是否成功，true为成功</returns>
-        public static bool Update(SystemRole model, Expression<Func<SystemRole, bool>> predicate, bool reverse, SqlConnection conn, SqlTransaction transaction, params SystemRoleColumn[] fields)
+        public static bool Update(UploadFileInfo model, Expression<Func<UploadFileInfo, bool>> predicate, bool reverse, SqlConnection conn, SqlTransaction transaction, params UploadFileInfoColumn[] fields)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -345,16 +350,16 @@ namespace Force.DataLayer
 			}
 
             var sql = new StringBuilder();
-            sql.Append("UPDATE [SystemRole]");
+            sql.Append("UPDATE [UploadFileInfo]");
             if (fields == null || fields.Length == 0)
             {
-                 sql.Append(" SET [Name] = @Name, [Remark] = @Remark, [CreatedTime] = @CreatedTime");
+                 sql.Append(" SET [Name] = @Name, [URL] = @URL, [Source] = @Source, [Type] = @Type, [IsUse] = @IsUse, [HashVal] = @HashVal, [PhysicalPath] = @PhysicalPath, [CreatedTime] = @CreatedTime");
             }
             else
             {
 				if (reverse == true)
 				{
-					 fields = (SystemRoleColumn[])Columns.All.Except(fields);
+					 fields = (UploadFileInfoColumn[])Columns.All.Except(fields);
 				}
                 sql.Append(" SET ");
                 for (int i = 0; i < fields.Length; i++)
@@ -397,48 +402,48 @@ namespace Force.DataLayer
         }
 
 		/// <summary>
-        /// 获取指定的SystemRole实体对象
+        /// 获取指定的UploadFileInfo实体对象
         /// </summary>
 		/// <param name="Id">Id</param>
-        /// <returns>SystemRole实体</returns>
-        public static SystemRole GetModel(int Id)
+        /// <returns>UploadFileInfo实体</returns>
+        public static UploadFileInfo GetModel(int Id)
         {
             var sql = new StringBuilder();
-            sql.Append("SELECT TOP 1 [Id], [Name], [Remark], [CreatedTime] FROM [SystemRole] ");
+            sql.Append("SELECT TOP 1 [Id], [Name], [URL], [Source], [Type], [IsUse], [HashVal], [PhysicalPath], [CreatedTime] FROM [UploadFileInfo] ");
             sql.Append(" WHERE [Id]=@Id ");
-            SystemRole ret = null;
+            UploadFileInfo ret = null;
             using (var conn = GetOpenConnection())
             {
-                ret = conn.QueryFirstOrDefault<SystemRole>(sql.ToString(), new { @Id=Id });
+                ret = conn.QueryFirstOrDefault<UploadFileInfo>(sql.ToString(), new { @Id=Id });
             }
 
             return ret;
         }
 
 		/// <summary>
-        /// 获取指定的SystemRole实体对象
+        /// 获取指定的UploadFileInfo实体对象
         /// </summary>
-        public static SystemRole GetModel(Expression<Func<SystemRole, bool>> predicate)
+        public static UploadFileInfo GetModel(Expression<Func<UploadFileInfo, bool>> predicate)
         {
 			var parser = new PredicateParser();
             var where_str = parser.Parse(predicate);
 			
             var sql = new StringBuilder();
-            sql.Append("SELECT TOP 1 * FROM [SystemRole] ");
+            sql.Append("SELECT TOP 1 * FROM [UploadFileInfo] ");
             sql.Append(" WHERE " + where_str);
-            SystemRole ret = null;
+            UploadFileInfo ret = null;
             using (var conn = GetOpenConnection())
             {
-                ret = conn.QueryFirstOrDefault<SystemRole>(sql.ToString());
+                ret = conn.QueryFirstOrDefault<UploadFileInfo>(sql.ToString());
             }
 			
             return ret;
         }
 
 		/// <summary>
-        /// 批量获取SystemRole实体对象
+        /// 批量获取UploadFileInfo实体对象
         /// </summary>
-        public static List<SystemRole> GetList(Expression<Func<SystemRole, bool>> predicate = null, params SystemRoleColumn[] orderBy)
+        public static List<UploadFileInfo> GetList(Expression<Func<UploadFileInfo, bool>> predicate = null, params UploadFileInfoColumn[] orderBy)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -448,25 +453,25 @@ namespace Force.DataLayer
 			}
 
             var sql = new StringBuilder();
-            sql.Append("SELECT * FROM [SystemRole]");
+            sql.Append("SELECT * FROM [UploadFileInfo]");
             if (where_str != string.Empty)
 				sql.Append(" WHERE " + where_str);
 			if (orderBy != null && orderBy.Length > 0)
                 sql.Append(" ORDER BY " + string.Join(", ", orderBy.Select(p => $"{p.Name} {p.Asc}")));
 
-			List<SystemRole> ret = null;
+			List<UploadFileInfo> ret = null;
             using (var conn = GetOpenConnection())
             {
-                ret = conn.Query<SystemRole>(sql.ToString()).ToList();
+                ret = conn.Query<UploadFileInfo>(sql.ToString()).ToList();
             }
 			
             return ret;
         }
 
 		/// <summary>
-        /// 批量获取SystemRole实体对象
+        /// 批量获取UploadFileInfo实体对象
         /// </summary>
-        public static List<SystemRole> GetList(int top, Expression<Func<SystemRole, bool>> predicate = null, params SystemRoleColumn[] orderBy)
+        public static List<UploadFileInfo> GetList(int top, Expression<Func<UploadFileInfo, bool>> predicate = null, params UploadFileInfoColumn[] orderBy)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -476,16 +481,16 @@ namespace Force.DataLayer
 			}
 
             var sql = new StringBuilder();
-            sql.Append("SELECT TOP " + top.ToString() + " * FROM [SystemRole]");
+            sql.Append("SELECT TOP " + top.ToString() + " * FROM [UploadFileInfo]");
             if (where_str != string.Empty)
 				sql.Append(" WHERE " + where_str);
 			if (orderBy != null && orderBy.Length > 0)
                 sql.Append(" ORDER BY " + string.Join(", ", orderBy.Select(p => $"{p.Name} {p.Asc}")));
 
-			List<SystemRole> ret = null;
+			List<UploadFileInfo> ret = null;
             using (var conn = GetOpenConnection())
             {
-                ret = conn.Query<SystemRole>(sql.ToString()).ToList();
+                ret = conn.Query<UploadFileInfo>(sql.ToString()).ToList();
             }
 			
             return ret;
@@ -494,7 +499,7 @@ namespace Force.DataLayer
 		/// <summary>
 		/// 获取记录总数
 		/// </summary>
-        public static int GetCount(Expression<Func<SystemRole, bool>> predicate = null)
+        public static int GetCount(Expression<Func<UploadFileInfo, bool>> predicate = null)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -504,7 +509,7 @@ namespace Force.DataLayer
 			}
 
             var sql = new StringBuilder();
-            sql.Append("SELECT COUNT(1) FROM [SystemRole]");
+            sql.Append("SELECT COUNT(1) FROM [UploadFileInfo]");
 			if (where_str != string.Empty)
 				sql.Append(" WHERE " + where_str);
 
@@ -520,12 +525,12 @@ namespace Force.DataLayer
 		/// <summary>
 		/// 分页获取数据列表
 		/// </summary>
-		public static PageDataView<SystemRole> GetPage(
-			Expression<Func<SystemRole, bool>> predicate = null, 
+		public static PageDataView<UploadFileInfo> GetPage(
+			Expression<Func<UploadFileInfo, bool>> predicate = null, 
 			int pageSize = 20, 
 			int currentPage = 1, 
-			SystemRoleColumn orderBy = null, 
-			params SystemRoleColumn[] columns)
+			UploadFileInfoColumn orderBy = null, 
+			params UploadFileInfoColumn[] columns)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -546,8 +551,8 @@ namespace Force.DataLayer
                 column_str = string.Join(", ", columns.Select(p => $"[{p.Name}]"));
             }
 
-			return Paged<SystemRole>(
-					"[SystemRole]", 
+			return Paged<UploadFileInfo>(
+					"[UploadFileInfo]", 
 					where_str, 
 					orderby_str, 
 					column_str, 
@@ -558,12 +563,12 @@ namespace Force.DataLayer
 		/// <summary>
 		/// 分页获取数据列表
 		/// </summary>
-		public static PageDataView<SystemRole> GetPage(
-			Expression<Func<SystemRole, bool>> predicate, 
+		public static PageDataView<UploadFileInfo> GetPage(
+			Expression<Func<UploadFileInfo, bool>> predicate, 
 			int pageSize, 
 			int currentPage, 
-			IList<SystemRoleColumn> orderBy, 
-			params SystemRoleColumn[] columns)
+			IList<UploadFileInfoColumn> orderBy, 
+			params UploadFileInfoColumn[] columns)
         {
 			var where_str = string.Empty;
 			if (predicate != null)
@@ -584,8 +589,8 @@ namespace Force.DataLayer
                 column_str = string.Join(", ", columns.Select(p => $"[{p.Name}]"));
             }
 
-			return Paged<SystemRole>(
-					"[SystemRole]", 
+			return Paged<UploadFileInfo>(
+					"[UploadFileInfo]", 
 					where_str, 
 					orderby_str, 
 					column_str, 

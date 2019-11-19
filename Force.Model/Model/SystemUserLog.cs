@@ -1,16 +1,17 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 11:10:22
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
 using System;
+using System.Collections.Generic;
 
 namespace Force.Model
 {
-    /// <summary>
-    /// SystemUserLog实体
-    /// 用户操作日志
-    /// </summary>
-    [Serializable]
+	/// <summary>
+	/// SystemUserLog实体
+	/// 用户操作日志
+	/// </summary>
+	[Serializable]
 	public class SystemUserLog
 	{
 		public SystemUserLog()
@@ -24,7 +25,7 @@ namespace Force.Model
 		private short _type;
 		private string _ip;
 		private DateTime _createdtime;
-		private int ___pagerow;
+
 
 		/// <summary>
 		/// Id
@@ -72,7 +73,7 @@ namespace Force.Model
 		}
 
 		/// <summary>
-		/// 类型 [1 银币充值 2 后台登录退出 3 菜单操作 4 角色操作 5 系统用户操作 6 后台Agent登录 7 商户后台登录 8 提现审核 9 渠道账号管理 10 代理管理 11 死亡订单管理 12 订单管理 13 商户管理 14 后台其他]
+		/// 类型 [1 后台登录退出 2 菜单操作 3 角色操作 4 操作用户 5 后台其他]
 		/// </summary>
 		public short Type
 		{
@@ -98,10 +99,6 @@ namespace Force.Model
 			get { return _createdtime; }
 		}
 
-		public int __PageRow
-		{
-			set { ___pagerow = value; }
-			get { return ___pagerow; }
-		}
+
 	}
 }

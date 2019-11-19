@@ -61,8 +61,4 @@
     <None Include="wwwroot\assets\vendors\base\vendors.bundle.js" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\SystemMenu\" />
-  </ItemGroup>
-
 </Project>

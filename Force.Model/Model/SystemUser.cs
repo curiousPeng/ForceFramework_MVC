@@ -1,16 +1,17 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 11:10:22
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
 using System;
+using System.Collections.Generic;
 
 namespace Force.Model
 {
-    /// <summary>
-    /// SystemUser实体
-    /// 包含后台用户数据
-    /// </summary>
-    [Serializable]
+	/// <summary>
+	/// SystemUser实体
+	/// 包含后台用户数据
+	/// </summary>
+	[Serializable]
 	public class SystemUser
 	{
 		public SystemUser()
@@ -18,13 +19,14 @@ namespace Force.Model
 
 		private int _id;
 		private string _account;
+		private string _nickname;
 		private string _email;
 		private string _password;
 		private string _phone;
 		private string _headimage;
 		private short _status;
 		private DateTime _createdtime;
-		private int ___pagerow;
+
 
 		/// <summary>
 		/// Id
@@ -42,6 +44,15 @@ namespace Force.Model
 		{
 			set { _account = value; }
 			get { return _account; }
+		}
+
+		/// <summary>
+		/// 昵称
+		/// </summary>
+		public string NickName
+		{
+			set { _nickname = value; }
+			get { return _nickname; }
 		}
 
 		/// <summary>
@@ -98,10 +109,6 @@ namespace Force.Model
 			get { return _createdtime; }
 		}
 
-		public int __PageRow
-		{
-			set { ___pagerow = value; }
-			get { return ___pagerow; }
-		}
+
 	}
 }

@@ -1,23 +1,23 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 10:47:41
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
-using Dapper;
-using Force.DataLayer.Base;
-using Force.DataLayer.Metadata;
-using Force.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Dapper;
+using System.Data.SqlClient;
+using DataLayer.Base;
+using Force.Model;
+using Force.DataLayer.Metadata;
 
 namespace Force.DataLayer
 {
-    namespace Metadata
-    {
-        public sealed class SystemUserLogColumn : IColumn
+	namespace Metadata
+	{
+		public sealed class SystemUserLogColumn : IColumn
 		{
 			internal SystemUserLogColumn(string table, string name)
 			{
@@ -352,7 +352,7 @@ namespace Force.DataLayer
             sql.Append("UPDATE [SystemUserLog]");
             if (fields == null || fields.Length == 0)
             {
-                 sql.Append(" SET [SystemUserId] = @SystemUserId, [SystemUserName] = @SystemUserName, [ActionRoute] = @ActionRoute, [Details] = @Details, [Type] = @Type, [IP] = @IP");
+                 sql.Append(" SET [SystemUserId] = @SystemUserId, [SystemUserName] = @SystemUserName, [ActionRoute] = @ActionRoute, [Details] = @Details, [Type] = @Type, [IP] = @IP, [CreatedTime] = @CreatedTime");
             }
             else
             {

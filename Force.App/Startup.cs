@@ -37,6 +37,7 @@ namespace Force.App
             services.AddMvc(options=> 
             {
                 options.Filters.Add<ForceActionFilter>();
+                options.Filters.Add<ForceExceptionFilter>();
             })
                .AddJsonOptions(options =>
                {
@@ -68,7 +69,7 @@ namespace Force.App
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-           
+            app.UseStatusCodePagesWithReExecute("/home/error");
             app.UseSession(new SessionOptions() { IdleTimeout = TimeSpan.FromHours(2) });
             app.UseStaticFiles();
             app.UseCookiePolicy();

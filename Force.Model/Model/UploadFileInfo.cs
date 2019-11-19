@@ -8,24 +8,23 @@ using System.Collections.Generic;
 namespace Force.Model
 {
 	/// <summary>
-	/// SystemMenu实体
-	/// 菜单列表
+	/// UploadFileInfo实体
+	/// 用于记录上传的文件（可能是图片、apk包等等）
 	/// </summary>
 	[Serializable]
-	public class SystemMenu
+	public class UploadFileInfo
 	{
-		public SystemMenu()
+		public UploadFileInfo()
 		{}
 
 		private int _id;
 		private string _name;
-		private int _parentid;
-		private string _actionroute;
-		private string _icon;
-		private short _type;
-		private int _sort;
+		private string _url;
+		private short _source;
+		private string _type;
 		private bool _isuse;
-		private string _remark;
+		private string _hashval;
+		private int _physicalpath;
 		private DateTime _createdtime;
 
 
@@ -48,52 +47,34 @@ namespace Force.Model
 		}
 
 		/// <summary>
-		/// 父级Id
+		/// URL
 		/// </summary>
-		public int ParentId
+		public string URL
 		{
-			set { _parentid = value; }
-			get { return _parentid; }
+			set { _url = value; }
+			get { return _url; }
 		}
 
 		/// <summary>
-		/// Action路由
+		/// 来源[1 admin后台 2 agent代理系统 3 商户系统]
 		/// </summary>
-		public string ActionRoute
+		public short Source
 		{
-			set { _actionroute = value; }
-			get { return _actionroute; }
+			set { _source = value; }
+			get { return _source; }
 		}
 
 		/// <summary>
-		/// 图标
+		/// 文件类型
 		/// </summary>
-		public string Icon
-		{
-			set { _icon = value; }
-			get { return _icon; }
-		}
-
-		/// <summary>
-		/// 类型 [1 菜单 2 新增 3 编辑 4 删除 5 查询 6 页面]
-		/// </summary>
-		public short Type
+		public string Type
 		{
 			set { _type = value; }
 			get { return _type; }
 		}
 
 		/// <summary>
-		/// 排序
-		/// </summary>
-		public int Sort
-		{
-			set { _sort = value; }
-			get { return _sort; }
-		}
-
-		/// <summary>
-		/// 是否使用
+		/// 是否在使用
 		/// </summary>
 		public bool IsUse
 		{
@@ -102,12 +83,21 @@ namespace Force.Model
 		}
 
 		/// <summary>
-		/// 备注
+		/// Hash值
 		/// </summary>
-		public string Remark
+		public string HashVal
 		{
-			set { _remark = value; }
-			get { return _remark; }
+			set { _hashval = value; }
+			get { return _hashval; }
+		}
+
+		/// <summary>
+		/// 物理路径
+		/// </summary>
+		public int PhysicalPath
+		{
+			set { _physicalpath = value; }
+			get { return _physicalpath; }
 		}
 
 		/// <summary>

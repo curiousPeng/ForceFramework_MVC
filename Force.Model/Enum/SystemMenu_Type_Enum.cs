@@ -1,15 +1,17 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 10:47:41
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
+using System;
+using System.Collections.Generic;
 
 namespace Force.GenEnum
 {
-    /// <summary>
-    /// SystemMenu_Type_Enum枚举
-    /// 1 菜单 2 新增 3 编辑 4 删除 5 查询 6 页面
-    /// </summary>
-    public static class SystemMenu_Type_Enum
+	/// <summary>
+	/// SystemMenu_Type_Enum枚举
+	/// 1 菜单 2 新增 3 编辑 4 删除 5 查询 6 页面
+	/// </summary>
+	public static class SystemMenu_Type_Enum
 	{
 		/// <summary>
 		/// 菜单 1

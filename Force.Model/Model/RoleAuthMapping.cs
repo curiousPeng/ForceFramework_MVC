@@ -1,16 +1,17 @@
 /*
- *  2019-03-12 16:13:58
+ *  2019-11-18 11:10:22
  *  本文件由生成工具自动生成，请勿随意修改内容除非你很清楚自己在做什么！
  */
 using System;
+using System.Collections.Generic;
 
 namespace Force.Model
 {
-    /// <summary>
-    /// RoleAuthMapping实体
-    /// 角色跟对应权限项之间的关系
-    /// </summary>
-    [Serializable]
+	/// <summary>
+	/// RoleAuthMapping实体
+	/// 角色跟对应权限项之间的关系
+	/// </summary>
+	[Serializable]
 	public class RoleAuthMapping
 	{
 		public RoleAuthMapping()
@@ -20,7 +21,7 @@ namespace Force.Model
 		private int _roleid;
 		private int _menuid;
 		private DateTime _createdtime;
-		private int ___pagerow;
+
 
 		/// <summary>
 		/// Id
@@ -58,10 +59,6 @@ namespace Force.Model
 			get { return _createdtime; }
 		}
 
-		public int __PageRow
-		{
-			set { ___pagerow = value; }
-			get { return ___pagerow; }
-		}
+
 	}
 }
