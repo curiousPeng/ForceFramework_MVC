@@ -19,6 +19,12 @@ namespace Force.App.Controllers
         // GET: Login
         public ActionResult Index()
         {
+            var UserString = HttpContext.Session.GetString("UserInfo");
+
+            if (!string.IsNullOrEmpty(UserString))
+            {
+                return Redirect("/home/index");
+            }
             return View();
         }
 
@@ -32,7 +38,7 @@ namespace Force.App.Controllers
 
                 if (!string.IsNullOrEmpty(UserString))
                 {
-                    return Redirect("/home/index");
+                    return Json(ResponseHelper.Success(JsonConvert.DeserializeObject<SessionUser>(UserString)));
                 }
                 // TODO: Add login logic here
                 var password = AESUtil.Md5(model.Password);
@@ -41,7 +47,7 @@ namespace Force.App.Controllers
                 {
                     return Json(ResponseHelper.Error("账户或密码错误，请确认后再试！"));
                 }
-                if(user.Status!= SystemUser_Status_Enum.正常)
+                if (user.Status != SystemUser_Status_Enum.正常)
                 {
                     return Json(ResponseHelper.Error("账户已被冻结！"));
                 }
@@ -51,7 +57,7 @@ namespace Force.App.Controllers
                 {
                     return Json(ResponseHelper.Error("该账户还未分配角色请联系管理员!"));
                 }
-                var roleAuthList= RoleAuthMappingHelper.GetList(p => p.RoleId == role.Id);
+                var roleAuthList = RoleAuthMappingHelper.GetList(p => p.RoleId == role.Id);
                 if (roleAuthList.Count < 1)
                 {
                     return Json(ResponseHelper.Error("角色未拥有权限,请联系下管理员处理"));
@@ -67,7 +73,7 @@ namespace Force.App.Controllers
                     RoleId = role.Id,
                     Email = user.Email,
                     RoleName = role.Name,
-                    AuthMenu = roleAuthList.Select(p=>p.MenuId).ToList()
+                    AuthMenu = roleAuthList.Select(p => p.MenuId).ToList()
                 };
                 HttpContext.Session.SetString("UserInfo", JsonConvert.SerializeObject(UserCache));
                 //返回用户信息

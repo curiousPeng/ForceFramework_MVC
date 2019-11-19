@@ -8,6 +8,7 @@
 </div>
 <div class="modal-body">
     <div class="row">
+        <div id="msg-alert"></div>
         @Html.AntiForgeryToken()
         <div class="col-md-12">
             <div class="form-group">
@@ -89,32 +90,41 @@
             var status = $("#isUse").val();
             var code = $("#code").val();
             var token = $("input[name='__RequestVerificationToken']").val();
-            App.blockUI();
-            if (parentcode == "" || controllname == "" || sort == "" || remark == "") {
-                App.unblockUI();
-                AddAlert("danger", "请将表单填写完整！");
+            App.blockUI({
+                target: '.modal-body',
+                boxed: true
+            });
+            if (parentcode == "" || controllname == "" || sort == "") {
+                App.unblockUI('.modal-body');
+                MetAlert("#msg-alert", "danger", "请将表单填写完整！");
                 return false;
             }
             $.ajax({
-                url: "/Auth/save",
+                url: "/systemmenu/edit",
                 data: { __RequestVerificationToken: token, status: status, parentcode: parentcode, controllname: controllname, controllurl: controllurl, icon: icon, sort: sort, controlltype: controlltype, remark: remark, code: code },
                 dataType: "json",
                 type: "post",
                 success: function (result) {
-                    App.unblockUI();
-                    if (result.status == 1) {
-                        AddAlert("success", "修改成功啦~");
-                        window.location.reload();
+                    App.unblockUI('.modal-body');
+                    if (result.code == 1) {
+                        MetAlert("#msg-alert", "success", "修改成功啦~");
+                        App.blockUI({
+                            target: '.modal-body',
+                            boxed: true
+                        });
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000);
+
                     } else {
                         if (result.msg) {
-                            AddAlert("danger", result.msg);
+                            MetAlert("#msg-alert", "danger", result.msg);
                         } else {
-                            AddAlert("danger", "修改失败！");
+                            MetAlert("#msg-alert", "danger", "修改失败！");
                         }
                     }
                 }
             })
-
         });
     });
 </script>

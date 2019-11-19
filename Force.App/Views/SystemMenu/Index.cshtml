@@ -58,7 +58,7 @@
                                             <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@item.MenuCode" data-toggle="modal">编辑</span>
                                             @if (item.Status == 0)
                                             {
-                                                <span class="label label-sm label-danger" href="javascript:;" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要使用此菜单" data-status="1" data-id="@item.MenuCode" data-popout="true">使用</span>
+                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@item.MenuCode" data-popout="true">启用</span>
                                             }
                                             else
                                             {
@@ -95,11 +95,11 @@
                                                     <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@v.MenuCode" data-toggle="modal">编辑</span>
                                                     @if (v.Status == 0)
                                                     {
-                                                        <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要使用此菜单" data-status="1" data-id="@v.MenuCode" data-popout="true">使用</span>
+                                                        <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@v.MenuCode" data-popout="true">启用</span>
                                                     }
                                                     else
                                                     {
-                                                    <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@v.MenuCode" data-popout="true">停用</span>
+                                                        <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@v.MenuCode" data-popout="true">停用</span>
                                                     }
                                                     <span class="label label-sm label-success" onclick="modal_click(this);" data-url="/systemmenu/add?code=@v.MenuCode" data-toggle="modal">新增</span>
                                                 </td>
@@ -132,11 +132,11 @@
                                                             <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@vv.MenuCode" data-toggle="modal">编辑</span>
                                                             @if (vv.Status == 0)
                                                             {
-                                                        <span class="label label-sm label-danger" onmouseover="operation(this)" data-container="body" data-toggle="confirmation-changestatus" data-value="id,status" data-placement="top" data-original-title="是否要使用此菜单" data-status="1" data-id="@vv.MenuCode" data-popout="true">使用</span>
+                                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@vv.MenuCode" data-popout="true">启用</span>
                                                             }
                                                             else
                                                             {
-                                                        <span class="label label-sm label-danger" onmouseover="operation(this" data-container="body" data-toggle="confirmation-changestatus" data-value="id,status" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@vv.MenuCode" data-popout="true">停用</span>
+                                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@vv.MenuCode" data-popout="true">停用</span>
                                                             }
                                                         </td>
                                                     </tr>
@@ -176,25 +176,28 @@
                 App.blockUI();
                 $.ajax({
                     url: "/systemmenu/changestatus",
-                    data: { "id": $(this).data("id"), "status": $(this).data("status") },
+                    data: { "id": this.id, "status": this.status },
                     dataType: "json",
                     type: "POST",
                     success: function (result) {
-                        App.unblockUI();
-                        if (result.status == 1) {
-                            addAlert("#bootstrap_alerts_demo", "success", "操作成功啦~");
-                            window.location.reload();
+                        if (result.code == 1) {
+                            NotifyAlert("success", "操作成功啦~");
+                            setTimeout(function () {
+                                window.location.reload();
+                            },2000)
+                            
                         } else {
+                             App.unblockUI();
                             if (result.msg) {
-                                addAlert("#bootstrap_alerts_demo", "danger", result.msg);
+                                NotifyAlert("danger", result.msg);
                             } else {
-                                addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                                NotifyAlert("danger", "操作失败！");
                             }
                         }
                     },
                     error: function () {
                         App.unblockUI();
-                        addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                        NotifyAlert("danger", "操作失败！");
                     }
                 })
             }

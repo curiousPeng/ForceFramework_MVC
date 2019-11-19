@@ -11,14 +11,14 @@ namespace Force.Model.ViewModel.Menu
         public string ParentCode { get; set; }
         [Required]
         public string ControllName { get; set; }
-        [Required]
+
         public string Icon { get; set; }
         [Required]
         public int Sort { get; set; }
-        [Required]
+
         public string Remark { get; set; }
         [Required]
-        public int ControllType { get; set; }
+        public short ControllType { get; set; }
         [Required]
         public int Code { get; set; }
         [Required]

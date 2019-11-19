@@ -28,6 +28,7 @@
     <link href="@ConfigurationManager.Resource["ResourceApi"]/assets/global/plugins/bootstrap-modal/css/bootstrap-modal.css?v=@ConfigurationManager.Resource["Vsersion"]" rel="stylesheet" type="text/css" />
     <link href="@ConfigurationManager.Resource["ResourceApi"]/assets/global/plugins/datatables/datatables.min.css?v=@ConfigurationManager.Resource["Vsersion"]" rel="stylesheet" type="text/css" />
     <link href="@ConfigurationManager.Resource["ResourceApi"]/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css?v=@ConfigurationManager.Resource["Vsersion"]" rel="stylesheet" type="text/css" />
+    <link href="~/css/menulist.css" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS -->
     <!-- BEGIN THEME GLOBAL STYLES -->
     <link href="@ConfigurationManager.Resource["ResourceApi"]/assets/global/css/components.min.css?v=@ConfigurationManager.Resource["Vsersion"]" rel="stylesheet" id="style_components" type="text/css" />
@@ -127,7 +128,12 @@
     <script src="@ConfigurationManager.Resource["ResourceApi"]/assets/global/scripts/app.min.js?v=@ConfigurationManager.Resource["Vsersion"]" type="text/javascript"></script>
     <!-- END THEME GLOBAL SCRIPTS -->
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
-    <script src="~/Js/Util/Util.js?v=@ConfigurationManager.Resource["Vsersion"]" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            App.setAssetsPath("@ConfigurationManager.Resource["ResourceApi"]/assets/");
+        });
+    </script>
+    <script src="~/Js/Util/Util.js?v=@ConfigurationManager.Resource["Vsersion"]" type="text/javascript"></script
     <!-- END PAGE LEVEL SCRIPTS -->
     <!-- BEGIN THEME LAYOUT SCRIPTS -->
     <script src="@ConfigurationManager.Resource["ResourceApi"]/assets/layouts/layout/scripts/layout.min.js?v=@ConfigurationManager.Resource["Vsersion"]" type="text/javascript"></script>

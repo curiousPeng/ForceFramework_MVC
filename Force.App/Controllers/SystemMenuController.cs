@@ -1,8 +1,10 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Force.App.Util;
 using Force.DataLayer;
+using Force.DataLayer.Metadata;
 using Force.GenEnum;
 using Force.Model;
 using Force.Model.ViewModel.Menu;
@@ -19,7 +21,7 @@ namespace Force.App.Controllers
         public ActionResult Index()
         {
             //查出所有菜单并生成菜单树
-            
+
             var menu = SystemMenuHelper.GetList();
             var newMenu = CreateMenu(menu, 0);
             var subHeader = new SubHeader { Title = "菜单列表", PageTitle = "菜单列表", SubPageTitle = "所有菜单", LinkText = new Dictionary<string, string>() };
@@ -42,17 +44,34 @@ namespace Force.App.Controllers
         // POST: SystemMenu/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Add([FromBody] SaveMenuModel model)
+        public ActionResult Add([FromForm] SaveMenuModel model)
         {
             try
             {
                 // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                //查询是否存在该菜单
+                if (SystemMenuHelper.Exists(p => p.Name == model.ControllName && p.ActionRoute == model.ControllUrl))
+                {
+                    return Json(ResponseHelper.Error("该菜单已经存在了！"));
+                }
+                var MenuModel = new SystemMenu
+                {
+                    ActionRoute = model.ControllUrl.ToLower(),
+                    CreatedTime = DateTime.Now,
+                    Icon = model.Icon,
+                    IsUse = Convert.ToBoolean(model.Status),
+                    Name = model.ControllName,
+                    ParentId = Convert.ToInt32(model.ParentCode),
+                    Remark = model.Remark,
+                    Sort = model.Sort,
+                    Type = model.ControllType
+                };
+                SystemMenuHelper.Insert(MenuModel);
+                return Json(ResponseHelper.Success("ok"));
             }
             catch
             {
-                return View();
+                return Json(ResponseHelper.Error("出现了内部错误！请联系管理员处理！"));
             }
         }
 
@@ -71,18 +90,48 @@ namespace Force.App.Controllers
         // POST: SystemMenu/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([FromBody] SaveMenuModel model)
+        public ActionResult Edit([FromForm] SaveMenuModel model)
         {
             try
             {
                 // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                var MenuModel = SystemMenuHelper.GetModel(model.Code);
+                //查询是否存在该菜单
+                if (SystemMenuHelper.Exists(p => p.Id != model.Code && p.Name == model.ControllName && p.ActionRoute == model.ControllUrl))
+                {
+                    return Json(new { status = 0, msg = "该菜单已经存在,请修改！" });
+                }
+                MenuModel.Remark = model.Remark;
+                MenuModel.IsUse = Convert.ToBoolean(model.Status);
+                MenuModel.Name = model.ControllName;
+                MenuModel.Type = model.ControllType;
+                MenuModel.ActionRoute = model.ControllUrl;
+                MenuModel.Icon = model.Icon;
+                MenuModel.Sort = model.Sort;
+                MenuModel.ParentId = Convert.ToInt32(model.ParentCode);
+                SystemMenuHelper.Update(MenuModel);
+                return Json(ResponseHelper.Success("ok"));
             }
             catch
             {
-                return View();
+                return Json(ResponseHelper.Error("出现了内部错误！请联系管理员处理！"));
             }
+        }
+        
+        [HttpPost]
+        public ActionResult ChangeStatus()
+        {
+            try {
+                var status = Convert.ToInt32(Request.Form["status"]);
+                var code = int.Parse(Request.Form["id"]);
+
+                SystemMenuHelper.Update(new SystemMenu { Id = code, IsUse = Convert.ToBoolean(status) }, SystemMenuHelper.Columns.IsUse);
+                return new JsonResult(ResponseHelper.Success("ok"));
+            } catch
+            {
+                return new JsonResult(ResponseHelper.Error("出现内部错误请联系管理员解决！"));
+            }
+            
         }
 
         // POST: SystemMenu/Delete/5

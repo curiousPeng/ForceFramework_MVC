@@ -68,7 +68,7 @@
             data: { account: $("input[name='username']").val(), password: $("input[name='password']").val() },
             success: function (result) {
                 App.unblockUI();
-                if (result.code == 0) {
+                if (result.code == 1) {
                     window.location.href = "/home/index";
                 } else {
                     addAlert("#bootstrap_alerts", "danger", result.msg);

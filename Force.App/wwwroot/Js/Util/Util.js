@@ -1,4 +1,4 @@
-﻿function AddAlert(type, msg) {
+﻿function NotifyAlert(type, msg) {
     $.bootstrapGrowl(msg, {
         ele: 'body', // which element to append to
         type: type, // (null, 'info', 'danger', 'success', 'warning')
@@ -33,6 +33,16 @@ function modal_click(e, d = '#ajax-modal') {
         $modal.modal();
     });
 
+}
+function MetAlert(container, type, msg) {
+    //$("html,body").animate({ scrollTop: 0 }, 500);
+    App.alert({
+        container: container, // alerts parent container(by default placed after the page breadcrumbs)
+        type: type,  // alert's type
+        message: msg,  // alert's message
+        close: "true", // make alert closable
+        closeInSeconds: "0" // auto close after defined seconds
+    });
 }
 //function operation(e) {
 //    var el = $(e);

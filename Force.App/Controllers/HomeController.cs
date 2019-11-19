@@ -35,12 +35,11 @@ namespace Force.App.Controllers
             }
         }
 
-        // POST: Home/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create()
+        public ActionResult ErrorMsg(string msg="请求出现了错误！")
         {
-            return View();
+            HttpContext.Response.StatusCode = 500;
+            ViewBag.Msg = msg;
+            return View("ErrorModal");
         }
     }
 }
