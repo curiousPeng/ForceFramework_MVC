@@ -29,8 +29,8 @@ namespace Force.App.Controllers
             return View(newMenu);
         }
 
-        // GET: SystemMenu/Add
-        public ActionResult Add()
+        // GET: SystemMenu/Create
+        public ActionResult Create()
         {
             ViewBag.ParentCode = "0";
             if (!string.IsNullOrEmpty(Request.Query["code"]))
@@ -41,10 +41,10 @@ namespace Force.App.Controllers
             return View();
         }
 
-        // POST: SystemMenu/Add
+        // POST: SystemMenu/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Add([FromForm] SaveMenuModel model)
+        public ActionResult Create([FromForm] SaveMenuModel model)
         {
             try
             {

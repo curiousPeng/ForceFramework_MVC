@@ -1,0 +1,259 @@
+﻿<!-- BEGIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet light bordered ">
+            <div class="portlet-title">
+                <div class="caption font-dark">
+                    <i class="icon-settings font-dark"></i>
+                    <span class="caption-subject bold uppercase">AuthMenu</span>
+                </div>
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-xs-1">
+                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemuser/add" data-toggle="modal"> 新增用户 <i class="fa fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table table-bordered table-hover table-checkable text-center" id="systemuser_table_1">
+                    <thead>
+                        <tr>
+                            <th class="text-center"> 用户id </th>
+                            <th class="text-center"> 头像 </th>
+                            <th class="text-center"> 用户名 </th>
+                            <th class="text-center"> 账号 </th>
+                            <th class="text-center"> 手机号 </th>
+                            <th class="text-center"> 邮箱 </th>
+                            <th class="text-center"> 状态 </th>
+                            <th class="text-center"> 创建时间 </th>
+                            <th class="text-center"> 操作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="odd gradeX">
+                            <td style="vertical-align:middle" colspan="9">
+                                数据加载中。。。
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<!-- END CONTENT -->
+<script type="text/javascript">
+    $(function () {
+        systemuser_list_reload();
+    });
+    function systemuser_list_reload() {
+        var table = $('#systemuser_table_1');
+
+        _table_systemuser = table.dataTable({
+
+            // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+            "language": {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            "processing": true,
+            "serverSide": true,
+            "bSort": false,
+            searching: false,
+            "ajax": {
+                url: '/systemuser/list',
+                type: 'POST'
+            },
+            columns: [
+                {
+                    "data": "useCode"
+                },
+                {
+                    "data": "headImg",
+                    render: function (data, type, full) {
+                        var html = "";
+                        if (full.headImg != '') {
+                            html += "<img src='" + full.headImg + "' width='48'/>";
+                        }
+                        return html;
+                    }
+                },
+                {
+                    "data": "name"
+                },
+                {
+                    "data": "phone"
+                },
+                {
+                    "data": "email"
+                },
+                {
+                    "data": "status",
+                    render: function (data, type, full) {
+                        var status_text;
+                        switch (full.status) {
+                            case 0:
+                                status_text = "<span class='label label-danger'>冻结</span>";
+                                break;
+                            case 1:
+                                status_text = "<span class='label label-success'>正常</span>";
+                                break;
+                        }
+                        return status_text;
+                    }
+                },
+                {
+                    "data": "createdTime"
+                },
+                {
+                    "data": "useCode"
+                    , render: function (data, type, full) {
+                        var text = '无法操作';
+                        if (full.useCode != 1) {
+                            text = '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn default\" data-url=\"/systemuser/edit?code=' + full.useCode + '\" data-toggle=\"modal\">编辑</a>';
+                            if (full.status == 0) {
+                                text += '<a href="javascript:;" onmouseover=\"operation(this);\"  data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要恢复此用户" data-status="1" data-id="' + full.useCode + '" data-popout="true" class="btn green">恢复</a>';
+                            } else {
+                                text += '<a href="javascript:;"  onmouseover=\"operation(this);\"  data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要冻结此用户" data-status="0" data-id="' + full.useCode + '" data-popout="true" class="btn red">冻结</a>';
+                            }
+                            text += '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn purple\" data-url=\"/auth/useredit?user=' + full.useCode + '\" data-toggle=\"modal\">权限设置</a>';
+                        }
+                        return text;
+                    }
+                }
+            ],
+            // Or you can use remote translation file
+            //"language": {
+            //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
+            //},
+
+            // setup buttons extentension: http://datatables.net/extensions/buttons/
+            buttons: [
+                //{ extend: 'print', className: 'btn dark btn-outline' },
+                //{ extend: 'pdf', className: 'btn green btn-outline' },
+                //{ extend: 'csv', className: 'btn purple btn-outline ' }
+            ],
+
+            // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
+            rowReorder: {
+
+            },
+
+            "order": [
+                [0, 'asc']
+            ],
+
+            "lengthMenu": [
+                [5, 10, 15, 20, -1],
+                [5, 10, 15, 20, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+
+            "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
+            "initComplete": function (settings, json) {
+                //operation();
+            }
+
+            // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+            // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
+            // So when dropdowns used the scrollable div should be removed.
+            //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+        });
+
+        $("#btn_class_search").click(function () {
+            _table_systemuser.api().ajax.reload(null, false);
+        });
+    }
+    function modal_click(e) {
+        $.fn.modal.defaults.backdrop = "static";
+        $.fn.modal.defaults.spinner = $.fn.modalmanager.defaults.spinner =
+            '<div class="loading-spinner" style="width: 200px; margin-left: -100px;">' +
+            '<div class="progress progress-striped active">' +
+            '<div class="progress-bar" style="width: 100%;"></div>' +
+            '</div>' +
+            '</div>';
+        // general settings
+        $.fn.modalmanager.defaults.resize = true;
+
+        //ajax demo:
+        var $modal = $('#ajax-modal');
+        // $("#user-right-menu .dropdown-menu").hide();
+        // create the backdrop and wait for next modal to be triggered
+        $('body').modalmanager('loading');
+        var el = $(e);
+        $modal.load(el.attr('data-url'), '', function () {
+            $modal.modal();
+        });
+
+    }
+    function operation(e) {
+        $(e).confirmation({
+            singleton: true,
+            popout: true,
+            btnOkLabel: '是',
+            btnCancelLabel: '否',
+            onConfirm: function () {
+                App.blockUI();
+                $.ajax({
+                    url: "/systemuser/changestatus",
+                    data: { "id": $(e).data("id"), "status": $(e).data("status") },
+                    dataType: "json",
+                    type: "POST",
+                    success: function (result) {
+                        App.unblockUI();
+                        if (result.status == 1) {
+                            addAlert("#bootstrap_alerts_demo", "success", "操作成功啦~");
+                            _table_systemuser.api().ajax.reload(null, false);
+                        } else {
+                            if (result.msg) {
+                                addAlert("#bootstrap_alerts_demo", "danger", result.msg);
+                            } else {
+                                addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                            }
+                        }
+                    },
+                    error: function () {
+                        App.unblockUI();
+                        addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                    }
+                })
+            }
+        });
+
+    }
+    function addAlert(container, type, msg) {
+        //$("html,body").animate({ scrollTop: 0 }, 500);
+        App.alert({
+            container: container, // alerts parent container(by default placed after the page breadcrumbs)
+            type: type,  // alert's type
+            message: msg,  // alert's message
+            close: "true", // make alert closable
+            closeInSeconds: "0" // auto close after defined seconds
+        });
+    }
+</script>

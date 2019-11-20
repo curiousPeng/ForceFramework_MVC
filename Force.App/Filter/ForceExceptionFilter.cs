@@ -27,7 +27,6 @@ namespace Force.App.Filter
             if (_env.IsDevelopment())
             {
                 log.Error(context.Exception.ToString());
-                context.Result = new RedirectResult("/home/error?ErrorCode="+context.HttpContext.Response.StatusCode);
             }
             else
             {

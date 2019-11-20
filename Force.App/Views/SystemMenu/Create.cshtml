@@ -99,7 +99,7 @@
                 return false;
             }
             $.ajax({
-                url: "/systemmenu/add",
+                url: "/systemmenu/create",
                 data: { __RequestVerificationToken: token, status: status, parentcode: parentcode, controllname: controllname, controllurl: controllurl, icon: icon, sort: sort, controlltype: controlltype, remark: remark, code: code },
                 dataType: "json",
                 type: "post",
