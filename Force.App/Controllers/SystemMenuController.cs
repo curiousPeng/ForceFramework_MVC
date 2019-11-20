@@ -105,7 +105,7 @@ namespace Force.App.Controllers
                 MenuModel.IsUse = Convert.ToBoolean(model.Status);
                 MenuModel.Name = model.ControllName;
                 MenuModel.Type = model.ControllType;
-                MenuModel.ActionRoute = model.ControllUrl;
+                MenuModel.ActionRoute = model.ControllUrl.ToLower();
                 MenuModel.Icon = model.Icon;
                 MenuModel.Sort = model.Sort;
                 MenuModel.ParentId = Convert.ToInt32(model.ParentCode);

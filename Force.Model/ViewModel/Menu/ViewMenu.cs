@@ -10,6 +10,8 @@ namespace Force.Model.ViewModel.Menu
         public string MenuName { get; set; }
         public string Url { get; set; }
         public string MenuIcon { get; set; }
+        public bool IsChecked { get; set; }
+        public int ParentCode { get; set; }
         public List<ViewMenu> Children { get; set; }
     }
 }

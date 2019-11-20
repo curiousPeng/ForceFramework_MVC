@@ -37,30 +37,53 @@ namespace PartialHtml.ViewComponents
                 MenuList = SystemMenuHelper.GetList(p => SysUser.AuthMenu.Contains(p.Id) && p.Type == SystemMenu_Type_Enum.菜单 && p.IsUse == true);
             }
             //菜单树
-            var Menu = GetMenu(MenuList, 0);
-
+            var NowAction = HttpContext.Request.Path.ToString().ToLower();
+            var Menu = GetMenu(MenuList, 0, NowAction);
+            ViewBag.NowAction = NowAction;
             return Menu;
         }
-        private List<ViewMenu> GetMenu(List<SystemMenu> MenuList, int ParentCode)
+        private List<ViewMenu> GetMenu(List<SystemMenu> MenuList, int ParentCode,string NowAction)
         {
             List<ViewMenu> NewMeun = new List<ViewMenu>();
-            var list = MenuList.Where(p => p.ParentId == ParentCode).ToList();
+            
+            var list = MenuList.Where(p => p.ParentId == ParentCode&&p.ActionRoute!="/home/index").ToList();
             if (list.Count < 1)
             {
                 return NewMeun;
             }
             foreach (var item in list)
             {
+                bool IsChecked = false;
+                if (NowAction == item.ActionRoute)
+                {
+                    IsChecked = true;
+                    if (ParentCode != 0)
+                    {
+                        UpdateParentMenuIsChecked(NewMeun, ParentCode);
+                    }
+                }
                 NewMeun.Add(new ViewMenu()
                 {
-                    Children = GetMenu(MenuList, item.Id),
+                    Children = GetMenu(MenuList, item.Id, NowAction),
                     MenuCode = item.Id,
-                    MenuIcon = string.IsNullOrEmpty(item.Icon) ? "m-menu__link-bullet--dot" : item.Icon,
+                    ParentCode = ParentCode,
+                    MenuIcon = string.IsNullOrEmpty(item.Icon) ? "glyphicon glyphicon-asterisk" : item.Icon,
                     MenuName = item.Name,
+                    IsChecked = IsChecked,
                     Url = string.IsNullOrEmpty(item.ActionRoute) ? "javascript:;" : item.ActionRoute
                 });
             }
             return NewMeun;
+        }
+
+        private void UpdateParentMenuIsChecked(List<ViewMenu> MenuList, int Code)
+        {
+           var ParentMenu =  MenuList.Where(p => p.MenuCode == Code).First();
+            ParentMenu.IsChecked = true;
+            if(ParentMenu.ParentCode != 0)
+            {
+                UpdateParentMenuIsChecked(MenuList, ParentMenu.ParentCode);
+            }
         }
     }
 }

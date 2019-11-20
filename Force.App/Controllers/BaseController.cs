@@ -35,7 +35,7 @@ namespace Force.App.Controllers
         {
             get
             {
-                return _cache_user ?? (_cache_user = JsonConvert.DeserializeObject<SessionUser>(HttpContext.Session.GetString("UserInfo")));
+                return _cache_user;
             }
         }
         protected IRedisHelper RedisHlper
@@ -73,6 +73,19 @@ namespace Force.App.Controllers
                 if (requestMethod == "post")
                 {
                     context.Result = new JsonResult(Util.ResponseHelper.Error("登录已失效，请重新登录"));
+                }
+            }
+            _cache_user = JsonConvert.DeserializeObject<SessionUser>(user);
+            //校验权限
+            if (!_cache_user.AuthMenu.Contains(actionModel.Id) && !_cache_user.UId.Equals("1"))
+            {
+                if (requestMethod == "get")
+                {
+                    context.Result = new RedirectResult("/home/error?errorcode=401");
+                }
+                if (requestMethod == "post")
+                {
+                    context.Result = new RedirectResult("/home/errormsg?msg=您没有权限访问此页面！");
                 }
             }
             base.OnActionExecuting(context);
