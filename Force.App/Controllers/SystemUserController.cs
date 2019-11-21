@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Force.DataLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,38 @@ namespace Force.App.Controllers
         {
             return View();
         }
+
+        //[HttpPost]
+        //public ActionResult Index([FromForm])
+        //{
+        //    int draw = Convert.ToInt32(Request.Form["draw"]);
+        //    //分页用的开始ID
+        //    int start = Convert.ToInt32(Request.Form["start"]);
+        //    //每页数量
+        //    int pagesize = Convert.ToInt32(Request.Form["length"]);
+        //    var name = string.IsNullOrEmpty(Request.Form["name"]) ? "" : Request.Form["name"].ToString();
+
+        //    var dataList = SystemUserHelper.GetListByPage("Id<>1", " ", pageSize: 10, currentPage: 1);
+        //    long total = dataList.TotalPages;
+        //    var configList = dataList.Items;
+
+        //    var totalPage = Math.Ceiling(Convert.ToDouble(total / pagesize));
+        //    var model = new List<SystemUserViewModel>();
+        //    foreach (var item in configList)
+        //    {
+        //        model.Add(new SystemUserViewModel()
+        //        {
+        //            UseCode = item.Id,
+        //            CreatedTime = item.CreatedTime.ToString("yyyy/MM/dd HH:mm:ss"),
+        //            Status = item.Status,
+        //            Name = item.Name,
+        //            Email = item.Email,
+        //            HeadImg = _configuration["ImgURL"] + item.HeadImg,
+        //            Phone = item.Phone
+        //        });
+        //    }
+        //    return Json(new { data = model, draw = draw, recordsTotal = total, recordsFiltered = total });
+        //}
 
         // GET: SystemUser/Details/5
         public ActionResult Details(int id)

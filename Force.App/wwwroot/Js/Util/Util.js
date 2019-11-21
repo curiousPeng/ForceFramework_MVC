@@ -44,3 +44,47 @@ function MetAlert(container, type, msg) {
         closeInSeconds: "0" // auto close after defined seconds
     });
 }
+
+function operation(e) {
+    var el = $(e);
+    var url = el.data("url");
+    var value = el.data("value").split(",");
+    var valueData = [];
+    for (var i = 0; i < value.length; i++) {
+        var tmp = {};
+        tmp[value[i]] = el.data(value[i]);
+        valueData.push(tmp);
+    }
+    $(e).confirmation({
+        singleton: true,
+        popout: true,
+        btnOkLabel: '是',
+        btnCancelLabel: '否',
+        onConfirm: function () {
+            App.blockUI();
+            $.ajax({
+                url: url,
+                data: valueData,
+                dataType: "json",
+                type: "POST",
+                success: function (result) {
+                    App.unblockUI();
+                    if (result.status === 1) {
+                        AddAlert("success", "操作成功啦~");
+                        window.location.reload();
+                    } else {
+                        if (result.msg) {
+                            AddAlert("danger", result.msg);
+                        } else {
+                            AddAlert("danger", "操作失败！");
+                        }
+                    }
+                },
+                error: function () {
+                    App.unblockUI();
+                    AddAlert("danger", "操作失败！");
+                }
+            });
+        }
+    });
+}

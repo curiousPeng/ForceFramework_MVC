@@ -85,7 +85,7 @@
             "bSort": false,
             searching: false,
             "ajax": {
-                url: '/systemuser/list',
+                url: '/systemuser/index',
                 type: 'POST'
             },
             columns: [
@@ -189,28 +189,6 @@
             _table_systemuser.api().ajax.reload(null, false);
         });
     }
-    function modal_click(e) {
-        $.fn.modal.defaults.backdrop = "static";
-        $.fn.modal.defaults.spinner = $.fn.modalmanager.defaults.spinner =
-            '<div class="loading-spinner" style="width: 200px; margin-left: -100px;">' +
-            '<div class="progress progress-striped active">' +
-            '<div class="progress-bar" style="width: 100%;"></div>' +
-            '</div>' +
-            '</div>';
-        // general settings
-        $.fn.modalmanager.defaults.resize = true;
-
-        //ajax demo:
-        var $modal = $('#ajax-modal');
-        // $("#user-right-menu .dropdown-menu").hide();
-        // create the backdrop and wait for next modal to be triggered
-        $('body').modalmanager('loading');
-        var el = $(e);
-        $modal.load(el.attr('data-url'), '', function () {
-            $modal.modal();
-        });
-
-    }
     function operation(e) {
         $(e).confirmation({
             singleton: true,
@@ -227,19 +205,19 @@
                     success: function (result) {
                         App.unblockUI();
                         if (result.status == 1) {
-                            addAlert("#bootstrap_alerts_demo", "success", "操作成功啦~");
+                            NotifyAlert("success", "操作成功啦~");
                             _table_systemuser.api().ajax.reload(null, false);
                         } else {
                             if (result.msg) {
-                                addAlert("#bootstrap_alerts_demo", "danger", result.msg);
+                                NotifyAlert("danger", result.msg);
                             } else {
-                                addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                                NotifyAlert("danger", "操作失败！");
                             }
                         }
                     },
                     error: function () {
                         App.unblockUI();
-                        addAlert("#bootstrap_alerts_demo", "danger", "操作失败！");
+                        NotifyAlert("danger", "操作失败！");
                     }
                 })
             }

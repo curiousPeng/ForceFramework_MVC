@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="Model\JoinModel\" />
+    <Folder Include="ViewModel\SystemUser\" />
   </ItemGroup>
 
 </Project>
