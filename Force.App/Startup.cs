@@ -34,12 +34,14 @@ namespace Force.App
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMemoryCache();
             services.AddNLog();
-            services.AddMvc(options=> 
+            services.AddMvc(
+                options =>
             {
                 options.Filters.Add<ForceActionFilter>();
                 options.Filters.Add<ForceExceptionFilter>();
             })
-               .AddJsonOptions(options =>
+               .AddJsonOptions(
+                options =>
                {
                    //设置时间格式
                    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";

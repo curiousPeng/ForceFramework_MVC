@@ -76,9 +76,21 @@ namespace Force.App.Controllers
                 }
                 return;
             }
+            if (actionModel == null)
+            {
+                if (requestMethod == "get")
+                {
+                    context.Result = new RedirectResult("/home/errormsg?msg=菜单还未添加，请联系管理员添加");
+                }
+                if (requestMethod == "post")
+                {
+                    context.Result = new JsonResult(Util.ResponseHelper.Error("菜单还未添加，请联系管理员添加"));
+                }
+                return;
+            }
             _cache_user = JsonConvert.DeserializeObject<SessionUser>(user);
             //校验权限
-            if (!_cache_user.AuthMenu.Contains(actionModel.Id) && !_cache_user.UId.Equals("1"))
+            if (!_cache_user.UId.Equals("1") && !_cache_user.AuthMenu.Contains(actionModel.Id))
             {
                 if (requestMethod == "get")
                 {

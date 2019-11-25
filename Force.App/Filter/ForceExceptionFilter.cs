@@ -27,12 +27,18 @@ namespace Force.App.Filter
             if (_env.IsDevelopment())
             {
                 log.Error(context.Exception.ToString());
+                if (context.HttpContext.Request.Method.ToLower() == "post")
+                {
+                    context.Result = new JsonResult(Util.ResponseHelper.Error("出现内部错误!请稍后再试!"));
+                }
+                return;
             }
             else
             {
                 log.Error(context.Exception.ToString());
                 context.ExceptionHandled = true;
                 context.Result = new RedirectResult("/home/error");
+                return;
             }
         }
     }

@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Force.App.Util;
+using Force.Common.AES;
 using Force.DataLayer;
+using Force.Model;
+using Force.Model.ViewModel.SystemUser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Force.App.Controllers
 {
     public class SystemUserController : BaseController
     {
-        public SystemUserController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
+        private IConfiguration _configuration;
+        public SystemUserController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(httpContextAccessor)
+        {
+            _configuration = configuration;
+        }
 
         // GET: SystemUser
         public ActionResult Index()
@@ -18,38 +28,40 @@ namespace Force.App.Controllers
             return View();
         }
 
-        //TODO：忙其他事去了。
-        //[HttpPost]
-        //public ActionResult Index([FromForm])
-        //{
-        //    int draw = Convert.ToInt32(Request.Form["draw"]);
-        //    //分页用的开始ID
-        //    int start = Convert.ToInt32(Request.Form["start"]);
-        //    //每页数量
-        //    int pagesize = Convert.ToInt32(Request.Form["length"]);
-        //    var name = string.IsNullOrEmpty(Request.Form["name"]) ? "" : Request.Form["name"].ToString();
+        [HttpPost]
+        public ActionResult Index([FromForm] UserPageReq ReqModel)
+        {
+            //当前页数
+            var nowpage = (ReqModel.start + ReqModel.length) / ReqModel.length;
 
-        //    var dataList = SystemUserHelper.GetListByPage("Id<>1", " ", pageSize: 10, currentPage: 1);
-        //    long total = dataList.TotalPages;
-        //    var configList = dataList.Items;
+            Expression<Func<SystemUser, bool>> exp = p => p.Id > 0;
+            if (!string.IsNullOrEmpty(ReqModel.Name))
+            {
+                exp = p => p.Email.Contains(ReqModel.Name) || p.Account.Contains(ReqModel.Name) || p.Phone.Contains(ReqModel.Name);
+            }
 
-        //    var totalPage = Math.Ceiling(Convert.ToDouble(total / pagesize));
-        //    var model = new List<SystemUserViewModel>();
-        //    foreach (var item in configList)
-        //    {
-        //        model.Add(new SystemUserViewModel()
-        //        {
-        //            UseCode = item.Id,
-        //            CreatedTime = item.CreatedTime.ToString("yyyy/MM/dd HH:mm:ss"),
-        //            Status = item.Status,
-        //            Name = item.Name,
-        //            Email = item.Email,
-        //            HeadImg = _configuration["ImgURL"] + item.HeadImg,
-        //            Phone = item.Phone
-        //        });
-        //    }
-        //    return Json(new { data = model, draw = draw, recordsTotal = total, recordsFiltered = total });
-        //}
+            var dataList = SystemUserHelper.GetPage(exp, pageSize: ReqModel.length, currentPage: nowpage);
+            long total = dataList.TotalPages;
+            var configList = dataList.Items;
+
+            var totalPage = Math.Ceiling(Convert.ToDouble(total / ReqModel.length));
+            var model = new List<SystemUserRes>();
+            foreach (var item in configList)
+            {
+                model.Add(new SystemUserRes()
+                {
+                    UseCode = item.Id,
+                    CreatedTime = item.CreatedTime,
+                    Status = item.Status,
+                    Name = item.NickName,
+                    Account = item.Account,
+                    Email = item.Email,
+                    HeadImg = string.IsNullOrEmpty(item.HeadImage) ? _configuration.GetSection("ResourceInfo:ResourceApi").Value + "/assets/layouts/layout/img/avatar3_small.jpg" : _configuration.GetSection("ImgURL").Value + item.HeadImage,
+                    Phone = item.Phone
+                });
+            }
+            return Json(new { data = model, draw = ReqModel.draw, recordsTotal = total, recordsFiltered = total });
+        }
 
         // GET: SystemUser/Details/5
         public ActionResult Details(int id)
@@ -66,63 +78,98 @@ namespace Force.App.Controllers
         // POST: SystemUser/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create([FromForm] SystemUserCreate model)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (SystemUserHelper.Exists(p => p.NickName.Equals(model.Name) || p.Phone.Equals(model.Phone) || p.Email.Equals(model.Email)))
+                {
+                    return Json(ResponseHelper.Error("该用户已经存在！"));
+                }
+                var UserModel = new SystemUser
+                {
+                    Account = model.Account,
+                    CreatedTime = DateTime.Now,
+                    Email = model.Email,
+                    HeadImage = "",
+                    NickName = model.Name,
+                    Password = AESUtil.Md5(model.Pwd),
+                    Phone = model.Phone,
+                    Status = model.IsUse
+                };
 
-                return RedirectToAction(nameof(Index));
+                SystemUserHelper.Insert(UserModel);
+                return Json(ResponseHelper.Success("ok"));
             }
             catch
             {
-                return View();
+                return Json(ResponseHelper.Error("内部出现错误!请稍后再试!"));
             }
         }
 
-        // GET: SystemUser/Edit/5
-        public ActionResult Edit(int id)
+        // GET: SystemUser/Edit
+        [HttpGet]
+        public ActionResult Edit()
         {
-            return View();
+            var useCode = Request.Query["code"];
+            if (string.IsNullOrEmpty(useCode))
+            {
+                return Redirect("/home/error");
+            }
+            var data = SystemUserHelper.GetModel(int.Parse(useCode));
+            return View(data);
         }
 
         // POST: SystemUser/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit([FromForm] SystemUserEdit model)
         {
             try
             {
-                // TODO: Add update logic here
+                if (!string.IsNullOrEmpty(model.Pwd))
+                {
+                    if (model.Pwd.Length < 6 || model.Pwd.Length > 16)
+                    {
+                        return Json(ResponseHelper.Error("密码长度不能少于6位大于16位！"));
+                    }
+                }
+                var UserModel = SystemUserHelper.GetModel(model.Id);
+                //查询是否存重名
+                if (SystemUserHelper.Exists(p => p.Id != model.Id && (p.Phone.Equals(model.Phone) || p.Email.Equals(model.Email))))
+                {
+                    return Json(new { status = 0, msg = "已存在相同的手机号或者邮箱,请修改！" });
+                }
+                UserModel.Email = model.Email;
 
-                return RedirectToAction(nameof(Index));
+                UserModel.Status = model.IsUse;
+                UserModel.NickName = model.Name;
+                UserModel.Phone = model.Phone;
+                UserModel.Password = AESUtil.Md5(model.Pwd);
+                SystemUserHelper.Update(UserModel);
+                return Json(ResponseHelper.Success("ok"));
             }
             catch
             {
-                return View();
+                return Json(ResponseHelper.Error("内部出现错误!请稍后再试!"));
             }
         }
 
-        // GET: SystemUser/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: SystemUser/Delete/5
+        // Post: SystemUser/ChangeStatus
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult ChangeStatus()
         {
             try
             {
-                // TODO: Add delete logic here
+                var status = Convert.ToInt16(Request.Form["status"]);
+                var code = int.Parse(Request.Form["id"]);
 
-                return RedirectToAction(nameof(Index));
+                SystemUserHelper.Update(new SystemUser { Id = code, Status = status }, SystemUserHelper.Columns.Status);
+                return new JsonResult(ResponseHelper.Success("ok"));
             }
             catch
             {
-                return View();
+                return new JsonResult(ResponseHelper.Error("出现内部错误请联系管理员解决！"));
             }
         }
     }

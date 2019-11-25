@@ -7,12 +7,18 @@
             <div class="portlet-title">
                 <div class="caption font-dark">
                     <i class="icon-settings font-dark"></i>
-                    <span class="caption-subject bold uppercase">AuthMenu</span>
+                    <span class="caption-subject bold uppercase">系统用户</span>
                 </div>
                 <div class="table-toolbar">
-                    <div class="row">
-                        <div class="col-xs-1">
+                    <div class="row col-md-12">
+                        <div class="col-md-2">
                             <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemuser/add" data-toggle="modal"> 新增用户 <i class="fa fa-plus"></i></a>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="user-keyword" class="form-control" placeholder="用户昵称/手机号/账号" />
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-default" type="button" id="btn_class_search">查询</button>
                         </div>
                     </div>
                 </div>
@@ -23,7 +29,7 @@
                         <tr>
                             <th class="text-center"> 用户id </th>
                             <th class="text-center"> 头像 </th>
-                            <th class="text-center"> 用户名 </th>
+                            <th class="text-center"> 昵称 </th>
                             <th class="text-center"> 账号 </th>
                             <th class="text-center"> 手机号 </th>
                             <th class="text-center"> 邮箱 </th>
@@ -86,7 +92,15 @@
             searching: false,
             "ajax": {
                 url: '/systemuser/index',
-                type: 'POST'
+                type: 'POST',
+                data: function (d) {
+                    if ($('#user-keyword').val() != '') {
+                        d.name = $('#user-keyword').val();
+                    }
+                },
+                error: function () {
+                    NotifyAlert("danger", "发生未知的错误!");
+                }
             },
             columns: [
                 {
@@ -97,13 +111,16 @@
                     render: function (data, type, full) {
                         var html = "";
                         if (full.headImg != '') {
-                            html += "<img src='" + full.headImg + "' width='48'/>";
+                            html += "<img src='" + full.headImg + "' width='23'/>";
                         }
                         return html;
                     }
                 },
                 {
                     "data": "name"
+                },
+                {
+                    "data": "account"
                 },
                 {
                     "data": "phone"
@@ -136,9 +153,9 @@
                         if (full.useCode != 1) {
                             text = '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn default\" data-url=\"/systemuser/edit?code=' + full.useCode + '\" data-toggle=\"modal\">编辑</a>';
                             if (full.status == 0) {
-                                text += '<a href="javascript:;" onmouseover=\"operation(this);\"  data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要恢复此用户" data-status="1" data-id="' + full.useCode + '" data-popout="true" class="btn green">恢复</a>';
+                                text += '<a href="javascript:;" onmouseover=\"operation(this);\"  data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要恢复此用户" data-status="1" data-id="' + full.useCode + '" data-popout="true" class="btn green">恢复</a>';
                             } else {
-                                text += '<a href="javascript:;"  onmouseover=\"operation(this);\"  data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要冻结此用户" data-status="0" data-id="' + full.useCode + '" data-popout="true" class="btn red">冻结</a>';
+                                text += '<a href="javascript:;"  onmouseover=\"operation(this);\" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要冻结此用户" data-status="0" data-id="' + full.useCode + '" data-popout="true" class="btn red">冻结</a>';
                             }
                             text += '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn purple\" data-url=\"/auth/useredit?user=' + full.useCode + '\" data-toggle=\"modal\">权限设置</a>';
                         }
@@ -168,8 +185,8 @@
             ],
 
             "lengthMenu": [
-                [5, 10, 15, 20, -1],
-                [5, 10, 15, 20, "All"] // change per page values here
+                [10, 20, 50, 100, -1],
+                [10, 20, 50, 100, "All"] // change per page values here
             ],
             // set the initial value
             "pageLength": 10,
@@ -189,49 +206,39 @@
             _table_systemuser.api().ajax.reload(null, false);
         });
     }
-    function operation(e) {
-        $(e).confirmation({
-            singleton: true,
-            popout: true,
-            btnOkLabel: '是',
-            btnCancelLabel: '否',
-            onConfirm: function () {
-                App.blockUI();
-                $.ajax({
-                    url: "/systemuser/changestatus",
-                    data: { "id": $(e).data("id"), "status": $(e).data("status") },
-                    dataType: "json",
-                    type: "POST",
-                    success: function (result) {
-                        App.unblockUI();
-                        if (result.status == 1) {
-                            NotifyAlert("success", "操作成功啦~");
-                            _table_systemuser.api().ajax.reload(null, false);
-                        } else {
-                            if (result.msg) {
-                                NotifyAlert("danger", result.msg);
-                            } else {
-                                NotifyAlert("danger", "操作失败！");
-                            }
-                        }
-                    },
-                    error: function () {
-                        App.unblockUI();
-                        NotifyAlert("danger", "操作失败！");
-                    }
-                })
-            }
-        });
+    //function operation(e) {
+    //    $(e).confirmation({
+    //        singleton: true,
+    //        popout: true,
+    //        btnOkLabel: '是',
+    //        btnCancelLabel: '否',
+    //        onConfirm: function () {
+    //            App.blockUI();
+    //            $.ajax({
+    //                url: "/systemuser/changestatus",
+    //                data: { "id": $(e).data("id"), "status": $(e).data("status") },
+    //                dataType: "json",
+    //                type: "POST",
+    //                success: function (result) {
+    //                    App.unblockUI();
+    //                    if (result.status == 1) {
+    //                        NotifyAlert("success", "操作成功啦~");
+    //                        _table_systemuser.api().ajax.reload(null, false);
+    //                    } else {
+    //                        if (result.msg) {
+    //                            NotifyAlert("danger", result.msg);
+    //                        } else {
+    //                            NotifyAlert("danger", "操作失败！");
+    //                        }
+    //                    }
+    //                },
+    //                error: function () {
+    //                    App.unblockUI();
+    //                    NotifyAlert("danger", "操作失败！");
+    //                }
+    //            })
+    //        }
+    //    });
 
-    }
-    function addAlert(container, type, msg) {
-        //$("html,body").animate({ scrollTop: 0 }, 500);
-        App.alert({
-            container: container, // alerts parent container(by default placed after the page breadcrumbs)
-            type: type,  // alert's type
-            message: msg,  // alert's message
-            close: "true", // make alert closable
-            closeInSeconds: "0" // auto close after defined seconds
-        });
-    }
+    //}
 </script>
