@@ -82,7 +82,7 @@ namespace Force.App.Controllers
         {
             try
             {
-                if (SystemUserHelper.Exists(p => p.NickName.Equals(model.Name) || p.Phone.Equals(model.Phone) || p.Email.Equals(model.Email)))
+                if (SystemUserHelper.Exists(p => p.NickName == model.Name || p.Phone == model.Phone || p.Email == model.Email))
                 {
                     return Json(ResponseHelper.Error("该用户已经存在！"));
                 }
@@ -125,34 +125,41 @@ namespace Force.App.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([FromForm] SystemUserEdit model)
         {
-            try
+            //try
+            //{
+            if (model.Id == 1)
             {
-                if (!string.IsNullOrEmpty(model.Pwd))
+                return Json(ResponseHelper.Error("该用户不可被编辑"));
+            }
+            if (!string.IsNullOrEmpty(model.Pwd))
+            {
+                if (model.Pwd.Length < 6 || model.Pwd.Length > 16)
                 {
-                    if (model.Pwd.Length < 6 || model.Pwd.Length > 16)
-                    {
-                        return Json(ResponseHelper.Error("密码长度不能少于6位大于16位！"));
-                    }
+                    return Json(ResponseHelper.Error("密码长度不能少于6位大于16位！"));
                 }
-                var UserModel = SystemUserHelper.GetModel(model.Id);
-                //查询是否存重名
-                if (SystemUserHelper.Exists(p => p.Id != model.Id && (p.Phone.Equals(model.Phone) || p.Email.Equals(model.Email))))
-                {
-                    return Json(new { status = 0, msg = "已存在相同的手机号或者邮箱,请修改！" });
-                }
-                UserModel.Email = model.Email;
+            }
+            var UserModel = SystemUserHelper.GetModel(model.Id);
+            //查询是否存重名
+            if (SystemUserHelper.Exists(p => p.Id != model.Id && (p.Phone.Equals(model.Phone) || p.Email.Equals(model.Email))))
+            {
+                return Json(new { status = 0, msg = "已存在相同的手机号或者邮箱,请修改！" });
+            }
+            UserModel.Email = model.Email;
 
-                UserModel.Status = model.IsUse;
-                UserModel.NickName = model.Name;
-                UserModel.Phone = model.Phone;
-                UserModel.Password = AESUtil.Md5(model.Pwd);
-                SystemUserHelper.Update(UserModel);
-                return Json(ResponseHelper.Success("ok"));
-            }
-            catch
+            UserModel.Status = model.IsUse;
+            UserModel.NickName = model.Name;
+            UserModel.Phone = model.Phone;
+            if (!string.IsNullOrEmpty(model.Pwd))
             {
-                return Json(ResponseHelper.Error("内部出现错误!请稍后再试!"));
+                UserModel.Password = AESUtil.Md5(model.Pwd);
             }
+            SystemUserHelper.Update(UserModel);
+            return Json(ResponseHelper.Success("ok"));
+            //}
+            //catch
+            //{
+            //    return Json(ResponseHelper.Error("内部出现错误!请稍后再试!"));
+            //}
         }
 
         // Post: SystemUser/ChangeStatus

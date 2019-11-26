@@ -55,16 +55,16 @@
                                         </td>
 
                                         <td>
-                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@item.MenuCode" data-toggle="modal">编辑</span>
+                                            <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@item.MenuCode" data-toggle="modal">编辑</span>
                                             @if (item.Status == 0)
                                             {
-                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@item.MenuCode" data-popout="true">启用</span>
+                                                <span class="label label-sm label-success" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@item.MenuCode" data-popout="true">启用</span>
                                             }
                                             else
                                             {
-                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@item.MenuCode" data-popout="true">停用</span>
+                                                <span class="label label-sm label-danger" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@item.MenuCode" data-popout="true">停用</span>
                                             }
-                                            <span class="label label-sm label-success" onclick="modal_click(this);" data-url="/systemmenu/add?code=@item.MenuCode" data-toggle="modal">新增</span>
+                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/create?code=@item.MenuCode" data-toggle="modal">新增</span>
                                         </td>
                                     </tr>
                                     @if (item.Children.Count > 0)
@@ -92,16 +92,16 @@
                                                     @item.MenuType
                                                 </td>
                                                 <td>
-                                                    <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@v.MenuCode" data-toggle="modal">编辑</span>
+                                                    <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@v.MenuCode" data-toggle="modal">编辑</span>
                                                     @if (v.Status == 0)
                                                     {
-                                                        <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@v.MenuCode" data-popout="true">启用</span>
+                                                        <span class="label label-sm label-success" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@v.MenuCode" data-popout="true">启用</span>
                                                     }
                                                     else
                                                     {
-                                                        <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@v.MenuCode" data-popout="true">停用</span>
+                                                        <span class="label label-sm label-danger" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@v.MenuCode" data-popout="true">停用</span>
                                                     }
-                                                    <span class="label label-sm label-success" onclick="modal_click(this);" data-url="/systemmenu/add?code=@v.MenuCode" data-toggle="modal">新增</span>
+                                                    <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/create?code=@v.MenuCode" data-toggle="modal">新增</span>
                                                 </td>
                                             </tr>
                                             @if (v.Children.Count > 0)
@@ -129,14 +129,14 @@
                                                             @item.MenuType
                                                         </td>
                                                         <td>
-                                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@vv.MenuCode" data-toggle="modal">编辑</span>
+                                                            <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@vv.MenuCode" data-toggle="modal">编辑</span>
                                                             @if (vv.Status == 0)
                                                             {
-                                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@vv.MenuCode" data-popout="true">启用</span>
+                                                                <span class="label label-sm label-success" onmouseover="operation(this);" data-value="id,status" data-url="/systemmenu/changestatus" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@vv.MenuCode" data-popout="true">启用</span>
                                                             }
                                                             else
                                                             {
-                                                                <span class="label label-sm label-danger" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@vv.MenuCode" data-popout="true">停用</span>
+                                                                <span class="label label-sm label-danger" onmouseover="operation(this);" data-value="id,status" data-url="/systemmenu/changestatus" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@vv.MenuCode" data-popout="true">停用</span>
                                                             }
                                                         </td>
                                                     </tr>
@@ -157,51 +157,3 @@
         <!-- END EXAMPLE TABLE PORTLET-->
     </div>
 </div>
-
-<script type="text/javascript">
-    $(function () {
-        //auth_list_reload();
-        //$(".action-submit").click(function () {
-        //    _table_auth.api().draw(false);
-        //})
-        operation();
-    });
-    function operation() {
-        $("[data-toggle='confirmation-changestatus']").confirmation({
-            singleton: true,
-            popout: true,
-            btnOkLabel: '是',
-            btnCancelLabel: '否',
-            onConfirm: function () {
-                App.blockUI();
-                $.ajax({
-                    url: "/systemmenu/changestatus",
-                    data: { "id": this.id, "status": this.status },
-                    dataType: "json",
-                    type: "POST",
-                    success: function (result) {
-                        if (result.code == 1) {
-                            NotifyAlert("success", "操作成功啦~");
-                            setTimeout(function () {
-                                window.location.reload();
-                            },2000)
-                            
-                        } else {
-                             App.unblockUI();
-                            if (result.msg) {
-                                NotifyAlert("danger", result.msg);
-                            } else {
-                                NotifyAlert("danger", "操作失败！");
-                            }
-                        }
-                    },
-                    error: function () {
-                        App.unblockUI();
-                        NotifyAlert("danger", "操作失败！");
-                    }
-                })
-            }
-        });
-
-    }
-</script>

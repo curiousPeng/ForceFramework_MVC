@@ -49,12 +49,12 @@ function operation(e) {
     var el = $(e);
     var url = el.data("url");
     var value = el.data("value").split(",");
-    var valueData = [];
+    var valueData = "{";
     for (var i = 0; i < value.length; i++) {
-        var tmp = {};
-        tmp[value[i]] = el.data(value[i]);
-        valueData.push(tmp);
+        valueData += value[i] + ":" + el.data(value[i]) + ",";
     }
+    valueData = valueData.slice(0, valueData.length - 1);
+    valueData += "}";
     $(e).confirmation({
         singleton: true,
         popout: true,
@@ -64,25 +64,27 @@ function operation(e) {
             App.blockUI();
             $.ajax({
                 url: url,
-                data: valueData,
+                data: eval('(' + valueData + ')'),
                 dataType: "json",
                 type: "POST",
                 success: function (result) {
-                    App.unblockUI();
-                    if (result.status === 1) {
-                        AddAlert("success", "操作成功啦~");
-                        window.location.reload();
+                    if (result.code === 1) {
+                        NotifyAlert("success", "操作成功啦~");
+                        window.setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
                     } else {
+                        App.unblockUI();
                         if (result.msg) {
-                            AddAlert("danger", result.msg);
+                            NotifyAlert("danger", result.msg);
                         } else {
-                            AddAlert("danger", "操作失败！");
+                            NotifyAlert("danger", "操作失败！");
                         }
                     }
                 },
                 error: function () {
                     App.unblockUI();
-                    AddAlert("danger", "操作失败！");
+                    NotifyAlert("danger", "操作失败！");
                 }
             });
         }

@@ -12,7 +12,7 @@
                 <div class="table-toolbar">
                     <div class="row col-md-12">
                         <div class="col-md-2">
-                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemuser/add" data-toggle="modal"> 新增用户 <i class="fa fa-plus"></i></a>
+                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemuser/create" data-toggle="modal"> 新增用户 <i class="fa fa-plus"></i></a>
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="user-keyword" class="form-control" placeholder="用户昵称/手机号/账号" />
@@ -151,13 +151,13 @@
                     , render: function (data, type, full) {
                         var text = '无法操作';
                         if (full.useCode != 1) {
-                            text = '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn default\" data-url=\"/systemuser/edit?code=' + full.useCode + '\" data-toggle=\"modal\">编辑</a>';
+                            text = '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn btn-sm default\" data-url=\"/systemuser/edit?code=' + full.useCode + '\" data-toggle=\"modal\">编辑</a>';
                             if (full.status == 0) {
-                                text += '<a href="javascript:;" onmouseover=\"operation(this);\"  data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要恢复此用户" data-status="1" data-id="' + full.useCode + '" data-popout="true" class="btn green">恢复</a>';
+                                text += '<a href="javascript:;" onmouseover=\"operation(this);\"  data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要恢复此用户" data-status="1" data-id="' + full.useCode + '" data-popout="true" class="btn btn-sm green">恢复</a>';
                             } else {
-                                text += '<a href="javascript:;"  onmouseover=\"operation(this);\" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要冻结此用户" data-status="0" data-id="' + full.useCode + '" data-popout="true" class="btn red">冻结</a>';
+                                text += '<a href="javascript:;"  onmouseover=\"operation(this);\" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要冻结此用户" data-status="0" data-id="' + full.useCode + '" data-popout="true" class="btn btn-sm red">冻结</a>';
                             }
-                            text += '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn purple\" data-url=\"/auth/useredit?user=' + full.useCode + '\" data-toggle=\"modal\">权限设置</a>';
+                            text += '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn btn-sm purple\" data-url=\"/auth/useredit?user=' + full.useCode + '\" data-toggle=\"modal\">权限设置</a>';
                         }
                         return text;
                     }
