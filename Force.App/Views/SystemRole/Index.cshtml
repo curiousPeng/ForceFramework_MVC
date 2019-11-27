@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "角色管理";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light">
+            <div id="bootstrap_alerts"> </div>
+            <div class="portlet-title">
+                <div class="caption font-dark">
+                    <i class="icon-settings font-dark"></i>
+                    <span class="caption-subject bold uppercase">系统角色</span>
+                </div>
+                <div class="table-toolbar">
+                    <div class="row col-md-12">
+                        <div class="col-md-2">
+                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemrole/create" data-toggle="modal"> 新增角色 <i class="fa fa-plus"></i></a>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="role-name" class="form-control" placeholder="角色名称" />
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-default" type="button" id="btn_class_search">查询</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table table-striped table-bordered table-hover dt-responsive" id="RoleTable">
+                    <thead>
+                        <tr>
+                            <th class="all text-center">角色ID</th>
+                            <th class="all text-center">角色名称</th>
+                            <th class="all text-center">角色备注</th>
+                            <th class="all text-center">创建时间</th>
+                            <th class="all text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        <tr>
+                            <td colspan="4">数据加载中。。。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        systemrole_list_reload();
+    });
+    function systemrole_list_reload() {
+        var table = $('#RoleTable');
+
+        _table_systemrole = table.dataTable({
+
+            // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+            "language": {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            "processing": true,
+            "serverSide": true,
+            "bSort": false,
+            searching: false,
+            "ajax": {
+                url: '/systemrole/index',
+                type: 'POST',
+                data: function (d) {
+                    if ($('#role-name').val() != '') {
+                        d.name = $('#role-name').val();
+                    }
+                },
+                error: function () {
+                    NotifyAlert("danger", "发生未知的错误!");
+                }
+            },
+            columns: [
+                { data: 'roleId' },
+                { data: 'roleName' },
+                { data: 'roleRemark' },
+                { data: 'createdTime' },
+                {
+                    data: 'roleId',
+                    render: function (data, type, row) {
+                        var status_text = '不可编辑';
+                        if (row.roleId != 1) {
+                            status_text = '<a href="javascript:;" class="btn btn-sm btn-danger" type="button"  onmouseover=\"operation(this);\" data-url="/systemrole/delete" data-value="id"  data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要删除该数据" data-id="' + row.roleId + '" data-popout="true">删除 <i class="fa fa-trash-o"></i></a>';
+                            status_text += '<a href="javascript:;" class="btn btn-sm btn-default" type="button" data-id="' + row.roleId + '" data-url="/SystemRole/Edit?id=' + row.roleId + '" onclick="modal_click(this);" data-toggle="modal">编辑 <i class="fa fa-edit"></i></a>';
+                            status_text += '<a href="javascript:;" class="btn btn-sm btn-info" type="button" data-id="' + row.roleId + '" data-url="/SystemRole/RoleMenu?id=' + row.roleId + '" onclick="modal_click(this);" data-toggle="modal">权限绑定</a>';
+                        }
+
+                        return status_text;
+                    }
+                }
+            ],
+            // Or you can use remote translation file
+            //"language": {
+            //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
+            //},
+
+            // setup buttons extentension: http://datatables.net/extensions/buttons/
+            buttons: [
+                //{ extend: 'print', className: 'btn dark btn-outline' },
+                //{ extend: 'pdf', className: 'btn green btn-outline' },
+                //{ extend: 'csv', className: 'btn purple btn-outline ' }
+            ],
+
+            // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
+            rowReorder: {
+
+            },
+
+            "order": [
+                [0, 'asc']
+            ],
+
+            "lengthMenu": [
+                [10, 20, 50, 100, -1],
+                [10, 20, 50, 100, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+
+            "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
+            "initComplete": function (settings, json) {
+                //operation();
+            }
+
+            // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+            // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js).
+            // So when dropdowns used the scrollable div should be removed.
+            //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+        });
+
+        $("#btn_class_search").click(function () {
+            _table_systemrole.api().ajax.reload(null, false);
+        });
+    }
+</script>

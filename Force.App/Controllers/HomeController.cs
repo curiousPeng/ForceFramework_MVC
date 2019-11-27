@@ -37,7 +37,6 @@ namespace Force.App.Controllers
 
         public ActionResult ErrorMsg(string msg="请求出现了错误！")
         {
-            HttpContext.Response.StatusCode = 500;
             ViewBag.Msg = msg;
             return View("ErrorModal");
         }

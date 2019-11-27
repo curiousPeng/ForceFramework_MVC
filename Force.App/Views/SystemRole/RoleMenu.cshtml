@@ -1,0 +1,117 @@
+﻿@model Force.Model.SystemRole;
+@{
+    ViewData["Title"] = "权限绑定";
+    Layout = null;
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title"><span>@ViewData["Title"]</span></h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div id="msg-alert"></div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="col-md-3 control-label"><span class="required" aria-required="true">*</span>权限名称 ： </label>
+                <div class="col-md-9 form-group">
+                    <input class="form-control controllname" value="@Model.Name" id="roleName" disabled placeholder="权限名称" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label"><span class="required" aria-required="true">*</span>选择绑定功能 ： </label>
+                <div class="col-md-9 form-group" style="height:600px;overflow-y:auto;">
+                    <div id="treeMenu" class="tree-demo"> </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <input value="-1" id="RoleId" type="hidden" />
+    <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+    <button class="btn blue submit-data" type="button">保存</button>
+</div>
+@*<script src="@ConfigurationManager.AppSettings["ResourceApi"]/assets/global/plugins/jquery.min.js" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+    var totalSel = "";
+    $(function () {
+        $("#RoleId").val(@ViewBag.id);
+        handleSample2();
+        function handleSample2() {
+            var strUrl = "/SystemRole/GetRoleMenu";
+            var roleId = $("#RoleId").val();
+            var entity = {
+                id: roleId
+            };
+
+            pageInitModule.post(entity, 'JSON', strUrl, function (obj) {
+                if (obj.status == 1) {
+                    console.log(JSON.parse(obj.result));
+                    $('#treeMenu').jstree({
+                        'plugins': ["wholerow", "checkbox", "types"],
+                        'core': {
+                            'data': [
+                                JSON.parse(obj.result)
+                            ]
+                        },
+                        "types": {
+                            "default": {
+                                "icon": "fa fa-folder icon-state-warning icon-lg"
+                            }
+                        }
+                    });
+                } else {
+
+                }
+            });
+        }
+
+        $('#treeMenu').on("changed.jstree", function (e, data) {
+
+            var ref = $('#treeMenu').jstree(true);//获得整个树
+            var sel = ref.get_selected(false);//获得所有选中节点，返回值为数组
+            totalSel = sel.toString();
+            setTimeout(function () {
+                $(".jstree-undetermined").each(function () {
+                    totalSel = totalSel + ',' + $(this).parent().parent().attr('id');
+                });
+            }, 200);
+
+
+        });
+
+        $(".submit-data").click(function () {
+            var roleId = $("#RoleId").val();
+            if (totalSel.split(',').length<2) {
+                pageInitModule.ToastrCustom("", "请选择需绑定功能", "error", "toast-top-center");
+                return;
+            }
+
+
+            //请求接口
+            var entity = {
+                totalSel: totalSel,
+                roleId: roleId
+            };
+
+            var strUrl = "/SystemRole/RoleMenuAdd";
+            if (roleId != "" && roleId != "-1") {
+                strUrl = "/SystemRole/RoleMenuEdit";
+            }
+
+            pageInitModule.blockUI();
+            pageInitModule.post(entity, 'JSON', strUrl, function (obj) {
+                pageInitModule.unblockUI();
+                if (obj.status == 1) {
+                    pageInitModule.ToastrCustom("", "成功", "success", "toast-top-center");
+                    $("#ModalRoleMenu").modal("hide");
+                    moduleTable.api().ajax.reload();
+                } else {
+                    pageInitModule.ToastrCustom("", obj.msg, "error", "toast-top-center");
+                }
+            });
+        });
+    });
+</script>

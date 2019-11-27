@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NLog;
+using System.Net;
 
 namespace Force.App.Controllers
 {
@@ -61,6 +62,11 @@ namespace Force.App.Controllers
             {
                 action = "/home/index";
             }
+            if (action.Equals("/home/errormsg")|| action.Equals("/home/error"))
+            {
+                base.OnActionExecuting(context);
+                return;
+            }
             var actionModel = SystemMenuHelper.GetModel(p => p.ActionRoute == action);
             var requestMethod = context.HttpContext.Request.Method.Trim().ToLower();
             var user = context.HttpContext.Session.GetString("UserInfo");
@@ -80,7 +86,7 @@ namespace Force.App.Controllers
             {
                 if (requestMethod == "get")
                 {
-                    context.Result = new RedirectResult("/home/errormsg?msg=菜单还未添加，请联系管理员添加");
+                    context.Result = new RedirectResult("/home/errormsg?msg="+ WebUtility.UrlEncode("菜单还未添加，请联系管理员添加"));
                 }
                 if (requestMethod == "post")
                 {
@@ -90,7 +96,7 @@ namespace Force.App.Controllers
             }
             _cache_user = JsonConvert.DeserializeObject<SessionUser>(user);
             //校验权限
-            if (!_cache_user.UId.Equals("1") && !_cache_user.AuthMenu.Contains(actionModel.Id))
+            if (!_cache_user.AuthMenu.Contains(actionModel.Id))
             {
                 if (requestMethod == "get")
                 {
@@ -98,7 +104,7 @@ namespace Force.App.Controllers
                 }
                 if (requestMethod == "post")
                 {
-                    context.Result = new RedirectResult("/home/errormsg?msg=您没有权限访问此页面！");
+                    context.Result = new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("您没有权限访问此页面！"));
                 }
             }
             base.OnActionExecuting(context);

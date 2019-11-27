@@ -42,11 +42,11 @@ namespace Force.App.Controllers
 
             var dataList = SystemUserHelper.GetPage(exp, pageSize: ReqModel.length, currentPage: nowpage);
             long total = dataList.TotalPages;
-            var configList = dataList.Items;
+            var itemList = dataList.Items;
 
             var totalPage = Math.Ceiling(Convert.ToDouble(total / ReqModel.length));
             var model = new List<SystemUserRes>();
-            foreach (var item in configList)
+            foreach (var item in itemList)
             {
                 model.Add(new SystemUserRes()
                 {
@@ -80,31 +80,25 @@ namespace Force.App.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([FromForm] SystemUserCreate model)
         {
-            try
+            if (SystemUserHelper.Exists(p => p.NickName == model.Name || p.Phone == model.Phone || p.Email == model.Email))
             {
-                if (SystemUserHelper.Exists(p => p.NickName == model.Name || p.Phone == model.Phone || p.Email == model.Email))
-                {
-                    return Json(ResponseHelper.Error("该用户已经存在！"));
-                }
-                var UserModel = new SystemUser
-                {
-                    Account = model.Account,
-                    CreatedTime = DateTime.Now,
-                    Email = model.Email,
-                    HeadImage = "",
-                    NickName = model.Name,
-                    Password = AESUtil.Md5(model.Pwd),
-                    Phone = model.Phone,
-                    Status = model.IsUse
-                };
+                return Json(ResponseHelper.Error("该用户已经存在！"));
+            }
+            var UserModel = new SystemUser
+            {
+                Account = model.Account,
+                CreatedTime = DateTime.Now,
+                Email = model.Email,
+                HeadImage = "",
+                NickName = model.Name,
+                Password = AESUtil.Md5(model.Pwd),
+                Phone = model.Phone,
+                Status = model.IsUse
+            };
 
-                SystemUserHelper.Insert(UserModel);
-                return Json(ResponseHelper.Success("ok"));
-            }
-            catch
-            {
-                return Json(ResponseHelper.Error("内部出现错误!请稍后再试!"));
-            }
+            SystemUserHelper.Insert(UserModel);
+            return Json(ResponseHelper.Success("ok"));
+
         }
 
         // GET: SystemUser/Edit
@@ -125,8 +119,6 @@ namespace Force.App.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([FromForm] SystemUserEdit model)
         {
-            //try
-            //{
             if (model.Id == 1)
             {
                 return Json(ResponseHelper.Error("该用户不可被编辑"));
@@ -155,29 +147,19 @@ namespace Force.App.Controllers
             }
             SystemUserHelper.Update(UserModel);
             return Json(ResponseHelper.Success("ok"));
-            //}
-            //catch
-            //{
-            //    return Json(ResponseHelper.Error("内部出现错误!请稍后再试!"));
-            //}
+
         }
 
         // Post: SystemUser/ChangeStatus
         [HttpPost]
         public ActionResult ChangeStatus()
         {
-            try
-            {
-                var status = Convert.ToInt16(Request.Form["status"]);
-                var code = int.Parse(Request.Form["id"]);
+            var status = Convert.ToInt16(Request.Form["status"]);
+            var code = int.Parse(Request.Form["id"]);
 
-                SystemUserHelper.Update(new SystemUser { Id = code, Status = status }, SystemUserHelper.Columns.Status);
-                return new JsonResult(ResponseHelper.Success("ok"));
-            }
-            catch
-            {
-                return new JsonResult(ResponseHelper.Error("出现内部错误请联系管理员解决！"));
-            }
+            SystemUserHelper.Update(new SystemUser { Id = code, Status = status }, SystemUserHelper.Columns.Status);
+            return new JsonResult(ResponseHelper.Success("ok"));
+
         }
     }
 }

@@ -60,7 +60,7 @@
                     <div class="col-xs-9 form-group">
                         <select name="isUse" id="isUse" class="source-type bs-select form-control">
                             <option value="1" @(Model.IsUse ? "selected" : "")>是</option>
-                            <option value="0" @(Model.IsUse ? "selected" : "")>否</option>
+                            <option value="0" @(Model.IsUse ? "" : "selected")>否</option>
                         </select>
                     </div>
                 </div>

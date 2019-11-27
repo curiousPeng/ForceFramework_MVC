@@ -157,7 +157,7 @@
                             } else {
                                 text += '<a href="javascript:;"  onmouseover=\"operation(this);\" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要冻结此用户" data-status="0" data-id="' + full.useCode + '" data-popout="true" class="btn btn-sm red">冻结</a>';
                             }
-                            text += '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn btn-sm purple\" data-url=\"/auth/useredit?user=' + full.useCode + '\" data-toggle=\"modal\">权限设置</a>';
+                            text += '<a onclick=\"modal_click(this);\"  class=\"ajax-model-user btn btn-sm purple\" data-url=\"/auth/useredit?user=' + full.useCode + '\" data-toggle=\"modal\">角色分配</a>';
                         }
                         return text;
                     }
@@ -206,39 +206,4 @@
             _table_systemuser.api().ajax.reload(null, false);
         });
     }
-    //function operation(e) {
-    //    $(e).confirmation({
-    //        singleton: true,
-    //        popout: true,
-    //        btnOkLabel: '是',
-    //        btnCancelLabel: '否',
-    //        onConfirm: function () {
-    //            App.blockUI();
-    //            $.ajax({
-    //                url: "/systemuser/changestatus",
-    //                data: { "id": $(e).data("id"), "status": $(e).data("status") },
-    //                dataType: "json",
-    //                type: "POST",
-    //                success: function (result) {
-    //                    App.unblockUI();
-    //                    if (result.status == 1) {
-    //                        NotifyAlert("success", "操作成功啦~");
-    //                        _table_systemuser.api().ajax.reload(null, false);
-    //                    } else {
-    //                        if (result.msg) {
-    //                            NotifyAlert("danger", result.msg);
-    //                        } else {
-    //                            NotifyAlert("danger", "操作失败！");
-    //                        }
-    //                    }
-    //                },
-    //                error: function () {
-    //                    App.unblockUI();
-    //                    NotifyAlert("danger", "操作失败！");
-    //                }
-    //            })
-    //        }
-    //    });
-
-    //}
 </script>

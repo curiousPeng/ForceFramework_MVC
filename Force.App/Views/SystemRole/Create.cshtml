@@ -1,0 +1,81 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title"><span>角色添加</span></h4>
+</div>
+<div class="block">
+    <div class="modal-body">
+        <div class="row">
+            <div id="msg-alert"></div>
+            <div class="col-md-12">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <div class="col-md-3 control-label"><span class="required" aria-required="true">*</span>角色名称 ： </div>
+                    <div class="col-md-9 form-group">
+                        <input class="form-control controllname" value="" id="RoleName" placeholder="角色名称(1-30位字符)" type="text" maxlength="30" data-Condition="required|minLength|maxLength" data-ConditionText="角色名称" data-minLength="1" data-maxLength="30">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">备注 ： </label>
+                    <div class="col-md-9 form-group">
+                        <textarea id="textarea_1" class="form-control remark" maxlength="500" rows="3" placeholder="备注说明" type="text"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn blue base-form submit-data" type="button">保存</button>
+        <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $(".submit-data").click(function () {
+            var roleName = $.trim($("#RoleName").val());
+            var remark = $.trim($("#textarea_1").val());
+            if (roleName == "") {
+                 MetAlert("#msg-alert", "角色名称必填", "danger");
+                return false;
+            }
+            if (roleName.length > 30) {
+                 MetAlert("#msg-alert", "角色名称小于30个字符", "danger");
+                return false;
+            }
+            //请求接口
+            var entity = {
+                roleName: roleName,
+                remark: remark,
+                __RequestVerificationToken: $("input[name='__RequestVerificationToken']").val()
+            };
+            App.blockUI({
+                target: '.block',
+                boxed: true
+            });
+             $.ajax({
+                url: "/systemrole/create",
+                data: entity,
+                dataType: "json",
+                type: "post",
+                success: function (result) {
+                    App.unblockUI('.block');
+                    if (result.code == 1) {
+                        NotifyAlert("success","添加成功");
+                        $("#ajax-modal").modal("hide");
+                        _table_systemrole.api().ajax.reload();
+                    } else {
+                        if (result.msg) {
+                            MetAlert("#msg-alert", "danger", result.msg);
+                        } else {
+                            MetAlert("#msg-alert", "danger", "添加失败！");
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
