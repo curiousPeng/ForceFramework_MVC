@@ -5,6 +5,7 @@
 using Dapper;
 using Force.DataLayer.Metadata;
 using Force.Model;
+using Force.Model.ViewModel.SystemUser;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -31,6 +32,18 @@ namespace Force.DataLayer
                 ret = conn.QueryFirstOrDefault<SystemRole>(sql.ToString(), new { @Id = userId });
             }
 
+            return ret;
+        }
+
+        public static SystemUserRole GetUserRoleBy(int userId)
+        {
+            var sql = new StringBuilder();
+            sql.Append("SELECT b.RoleId, a.* FROM [SystemUser] a LEFT JOIN [SystemUserRoleMapping] b ON b.SystemUserId=a.Id WHERE a.Id=@Id");
+            SystemUserRole ret;
+            using (var conn = GetOpenConnection())
+            {
+                ret = conn.QueryFirstOrDefault<SystemUserRole>(sql.ToString(), new { @Id = userId });
+            }
             return ret;
         }
     }

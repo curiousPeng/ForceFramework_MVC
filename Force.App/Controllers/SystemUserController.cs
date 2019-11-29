@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading.Tasks;
 using Force.App.Util;
 using Force.Common.AES;
@@ -111,6 +112,10 @@ namespace Force.App.Controllers
                 return Redirect("/home/error");
             }
             var data = SystemUserHelper.GetModel(int.Parse(useCode));
+            if (data == null)
+            {
+               return new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("用户不存在"));
+            }
             return View(data);
         }
 
@@ -159,7 +164,51 @@ namespace Force.App.Controllers
 
             SystemUserHelper.Update(new SystemUser { Id = code, Status = status }, SystemUserHelper.Columns.Status);
             return new JsonResult(ResponseHelper.Success("ok"));
+        }
 
+        [HttpGet]
+        public ActionResult UserRole(int user)
+        {
+            var userModel = SystemUserRoleMappingHelper.GetUserRoleBy(user);
+
+            if (userModel == null)
+            {
+              return  new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("用户不存在"));
+            }
+            var roleModel = SystemRoleHelper.GetList(p => p.Id != 1);
+            ViewBag.Role = roleModel;
+            return View(userModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UserRole(int userId,int roleId)
+        {
+            var userModel = SystemUserRoleMappingHelper.GetUserRoleBy(userId);
+            if (userModel == null)
+            {
+                return new JsonResult(ResponseHelper.Error("用户不存在"));
+            }
+            if (roleId == userModel.RoleId)
+            {
+                return new JsonResult(ResponseHelper.Success("ok"));
+            }
+            var roleModel = SystemRoleHelper.GetModel(p => p.Id == roleId);
+            if (roleModel == null)
+            {
+                return new JsonResult(ResponseHelper.Error("该角色不存在！"));
+            }
+            var userRoleMapping = SystemUserRoleMappingHelper.GetModel(p => p.SystemUserId == userId);
+            if (userRoleMapping == null)
+            {
+                userRoleMapping = new SystemUserRoleMapping { CreatedTime = DateTime.Now, RoleId = roleId, SystemUserId = userId };
+                SystemUserRoleMappingHelper.Insert(userRoleMapping);
+                return new JsonResult(ResponseHelper.Success("ok"));
+            }
+            if(SystemUserRoleMappingHelper.Update(userRoleMapping, p => p.SystemUserId == userId, SystemUserRoleMappingHelper.Columns.RoleId))
+            {
+                return new JsonResult(ResponseHelper.Success("ok"));
+            }
+            return new JsonResult(ResponseHelper.Error("修改失败！"));
         }
     }
 }

@@ -39,8 +39,8 @@
                     <label class="col-md-3 control-label" for="title">是否启用 ： </label>
                     <div class="col-xs-9 form-group">
                         <select name="isUse" id="isUse" class="source-type bs-select form-control">
-                            <option value="1" @(Model.Status == 1 ? "select" : "")>是</option>
-                            <option value="0" @(Model.Status == 0 ? "select" : "")>否</option>
+                            <option value="1" @(Model.Status == 1 ? "selected" : "")>是</option>
+                            <option value="0" @(Model.Status == 0 ? "selected" : "")>否</option>
                         </select>
                     </div>
                 </div>

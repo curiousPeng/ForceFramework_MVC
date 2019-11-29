@@ -1,0 +1,84 @@
+﻿@model Force.Model.ViewModel.SystemUser.SystemUserRole
+@{
+    Layout = null;
+    var RoleModel = ViewBag.Role as List<SystemRole>;
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title"><span>修改用户-@Model.NickName</span> </h4>
+</div>
+<div class="block">
+    <div class="modal-body">
+        <div class="row">
+            <div id="msg-alert"></div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-md-3 control-label" for="title">角色列表 ： </label>
+                    <div class="col-xs-9 form-group">
+                        <select name="role_menu" id="role_menu" class="source-type bs-select form-control">
+                            <option value="0">--请选择--</option>
+                            @{
+                                foreach (var item in RoleModel)
+                                {
+                                    if (Model.RoleId == item.Id)
+                                    {
+                                        <option value="@item.Id" @(Model.Status == 1 ? "selected" : "")>@item.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        @Html.AntiForgeryToken()
+        <input value="@Model.Id" data-code="@Model.Id" id="id" type="hidden" />
+        <button type="button" class="btn default" data-dismiss="modal">关闭</button>
+        <button class="btn blue submit-data" type="button">保存</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $(".submit-data").click(function () {
+            var roleid = $("#role_menu").val();
+            var id = $("#id").val();
+            App.blockUI({
+                target: '.block',
+                boxed: true
+            });
+            if (roleid == @Model.RoleId) {
+                App.unblockUI('.block');
+                NotifyAlert("success", "修改成功啦~");
+                $('#ajax-modal').modal('hide')
+            }
+            $.ajax({
+                url: "/systemuser/userrole",
+                data: { __RequestVerificationToken: $("input[name='__RequestVerificationToken']").val(), roleid: roleid, userid: id },
+                dataType: "json",
+                type: "post",
+                success: function (result) {
+                    App.unblockUI('.block');
+                    if (result.code == 1) {
+                        NotifyAlert("success", "修改成功啦~");
+                        $('#ajax-modal').modal('hide')
+                        _table_systemuser.api().ajax.reload(null, false);
+                    } else {
+                        if (result.msg) {
+                            MetAlert("#msg-alert", "danger", result.msg);
+                        } else {
+                            MetAlert("#msg-alert", "danger", "修改失败！");
+                        }
+                    }
+                }
+            })
+
+        });
+    });
+</script>
+

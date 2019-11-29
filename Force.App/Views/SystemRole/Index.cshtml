@@ -15,7 +15,7 @@
                 <div class="table-toolbar">
                     <div class="row col-md-12">
                         <div class="col-md-2">
-                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemrole/create" data-toggle="modal"> 新增角色 <i class="fa fa-plus"></i></a>
+                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemrole/create?modal=true" data-toggle="modal"> 新增角色 <i class="fa fa-plus"></i></a>
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="role-name" class="form-control" placeholder="角色名称" />
@@ -108,8 +108,8 @@
                         var status_text = '不可编辑';
                         if (row.roleId != 1) {
                             status_text = '<a href="javascript:;" class="btn btn-sm btn-danger" type="button"  onmouseover=\"operation(this);\" data-url="/systemrole/delete" data-value="id"  data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要删除该数据" data-id="' + row.roleId + '" data-popout="true">删除 <i class="fa fa-trash-o"></i></a>';
-                            status_text += '<a href="javascript:;" class="btn btn-sm btn-default" type="button" data-id="' + row.roleId + '" data-url="/SystemRole/Edit?id=' + row.roleId + '" onclick="modal_click(this);" data-toggle="modal">编辑 <i class="fa fa-edit"></i></a>';
-                            status_text += '<a href="javascript:;" class="btn btn-sm btn-info" type="button" data-id="' + row.roleId + '" data-url="/SystemRole/RoleMenu?id=' + row.roleId + '" onclick="modal_click(this);" data-toggle="modal">权限绑定</a>';
+                            status_text += '<a href="javascript:;" class="btn btn-sm btn-default" type="button" data-id="' + row.roleId + '" data-url="/SystemRole/Edit?id=' + row.roleId + '&modal=true" onclick="modal_click(this);" data-toggle="modal">编辑 <i class="fa fa-edit"></i></a>';
+                            status_text += '<a href="javascript:;" class="btn btn-sm btn-info" type="button" data-id="' + row.roleId + '" data-url="/SystemRole/RoleMenu?id=' + row.roleId + '&modal=true" onclick="modal_click(this);" data-toggle="modal">权限绑定</a>';
                         }
 
                         return status_text;

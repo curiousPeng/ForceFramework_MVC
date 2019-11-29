@@ -11,6 +11,7 @@ using Force.Model.ViewModel.Menu;
 using Force.Model.ViewModel.SubHeader;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Force.App.Controllers
 {
@@ -66,7 +67,12 @@ namespace Force.App.Controllers
             };
             var menuId = SystemMenuHelper.Insert(MenuModel);
             //给系统预留角色把权限绑上
-            RoleAuthMappingHelper.Insert(new RoleAuthMapping { CreatedTime = DateTime.Now, MenuId = menuId, RoleId = 1 });         
+            RoleAuthMappingHelper.Insert(new RoleAuthMapping { CreatedTime = DateTime.Now, MenuId = menuId, RoleId = 1 });
+            if (CacheUser.UId == "1")
+            {
+                CacheUser.AuthMenu.Add(menuId);
+                HttpContext.Session.SetString("UserInfo", JsonConvert.SerializeObject(CacheUser));
+            }
             return Json(ResponseHelper.Success("ok"));
 
         }

@@ -90,12 +90,12 @@ namespace Force.App.Controllers
         {
             if (id == 0)
             {
-                new RedirectResult("/home/errormsg?msg="+ WebUtility.UrlEncode("错误的请求方式！"));
+              return  new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("错误的请求方式！"));
             }
             var role = SystemRoleHelper.GetModel(p => p.Id == id);
             if (role == null)
             {
-                new RedirectResult("/home/errormsg?msg=未找到该角色");
+              return  new RedirectResult("/home/errormsg?msg=未找到该角色");
             }
             return View(role);
         }
@@ -108,7 +108,7 @@ namespace Force.App.Controllers
             var role = SystemRoleHelper.GetModel(p => p.Id == ReqModel.Id);
             if (role == null)
             {
-                new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("未找到该角色"));
+               return new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("未找到该角色"));
             }
             if (SystemRoleHelper.Exists(p => p.Id != role.Id && p.Name.Equals(ReqModel.RoleName)))
             {
@@ -131,6 +131,108 @@ namespace Force.App.Controllers
             }
             SystemRoleHelper.Delete(id);
             return Json(ResponseHelper.Success("ok"));
+        }
+
+        [HttpGet]
+        public ActionResult RoleMenu(int id)
+        {
+            if (id == 0)
+            {
+              return  new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("错误的请求方式！"));
+            }
+            var roleModel = SystemRoleHelper.GetModel(p => p.Id == id);
+            if (roleModel == null)
+            {
+                new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("不存在的角色！"));
+            }
+            return View(roleModel);
+        }
+
+        [HttpPost]
+        public ActionResult Menu(int id)
+        {
+            if (id == 0)
+            {
+               return new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("错误的请求方式！"));
+            }
+            //先查角色
+            var roleModel = SystemRoleHelper.GetModel(p => p.Id == id);
+            if (roleModel == null)
+            {
+               return new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("不存在的角色！"));
+            }
+            //在查角色对应的菜单
+            var menuList = RoleAuthMappingHelper.GetList(p => p.RoleId == id);
+            //在查当前用户拥有的菜单
+            SystemMenuHelper.Columns.CreatedTime.SetOrderByAsc();
+            var allMenu = SystemMenuHelper.GetList(p => p.IsUse == true && CacheUser.AuthMenu.Contains(p.Id), orderBy: SystemMenuHelper.Columns.CreatedTime);
+            //递归菜单做成树
+            return Json(ResponseHelper.Success(CreateTree(allMenu, menuList, 0)));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RoleMenu([FromForm] AuthSaveMenu model)
+        {
+            var role = SystemRoleHelper.GetModel(p => p.Id == model.RoleId);
+            if (role == null)
+            {
+                return Json(ResponseHelper.Error("不存在的角色!"));
+            }
+            var menuList = RoleAuthMappingHelper.GetList(p => p.RoleId == model.RoleId);
+            if (menuList.Count > 0)
+            {
+                var menuStr = string.Join(",", menuList.Select(p => p.MenuId).ToArray());
+                if (menuStr.Equals(model.Menus))
+                {
+                    return Json(ResponseHelper.Success("OK"));
+                }
+            }
+            RoleAuthMappingHelper.Delete(p => p.RoleId == model.RoleId);
+            var menuArr = model.Menus.Split(",").ToList();
+            List<RoleAuthMapping> insertList = new List<RoleAuthMapping>();
+            foreach (var i in menuArr)
+            {
+                insertList.Add(new RoleAuthMapping
+                {
+                    CreatedTime = DateTime.Now,
+                    MenuId = Convert.ToInt32(i),
+                    RoleId = role.Id
+                });
+            }
+            RoleAuthMappingHelper.InsertMany(insertList);
+            return Json(ResponseHelper.Success("ok"));
+        }
+
+        private List<SystemRoleTreeMenu> CreateTree(List<SystemMenu> allMenu, List<RoleAuthMapping> menuList, int ParentId)
+        {
+            var TreeModel = new List<SystemRoleTreeMenu>();
+            var list = allMenu.Where(p => p.ParentId == ParentId).ToList();
+            foreach (var item in list)
+            {
+                var status = new Dictionary<string, bool>();
+                if (item.ActionRoute == "/home/index")
+                {
+                    status.Clear();
+                    status.Add("selected", true);
+                    status.Add("disabled", true);
+                }
+                else if (menuList.Exists(p => p.MenuId == item.Id))
+                {
+                    status.Add("selected", true);
+                }
+                var child = CreateTree(allMenu, menuList, item.Id);
+                TreeModel.Add(new SystemRoleTreeMenu
+                {
+                    id = item.Id,
+                    children = child,
+                    state = status,
+                    icon = item.Icon,
+                    text = item.Name
+                });
+            }
+
+            return TreeModel;
         }
     }
 }

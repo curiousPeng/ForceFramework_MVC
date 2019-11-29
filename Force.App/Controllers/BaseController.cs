@@ -94,13 +94,24 @@ namespace Force.App.Controllers
                 }
                 return;
             }
-            _cache_user = JsonConvert.DeserializeObject<SessionUser>(user);
+            if (_cache_user == null)
+            {
+                _cache_user = JsonConvert.DeserializeObject<SessionUser>(user);
+            }
             //校验权限
             if (!_cache_user.AuthMenu.Contains(actionModel.Id))
             {
                 if (requestMethod == "get")
                 {
-                    context.Result = new RedirectResult("/home/error?errorcode=401");
+                    if(string.IsNullOrEmpty(context.HttpContext.Request.Query["modal"]))
+                    {
+                        context.Result = new RedirectResult("/home/error?errorcode=401");
+                    }
+                    else
+                    {
+                        context.Result = new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("没有权限访问此功能！"));
+                    }
+                    
                 }
                 if (requestMethod == "post")
                 {

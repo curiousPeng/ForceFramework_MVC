@@ -31,14 +31,15 @@ namespace PartialHtml.ViewComponents
             MenuList = SystemMenuHelper.GetList(p => SysUser.AuthMenu.Contains(p.Id) && p.Type == SystemMenu_Type_Enum.菜单 && p.IsUse == true);
             //菜单树
             var NowAction = HttpContext.Request.Path.ToString().ToLower();
+            var Action = MenuList.Where(p => p.ActionRoute == NowAction).Last();
             var Menu = GetMenu(MenuList, 0, NowAction);
+            UpdateParentMenuChecked(Menu, Action.ParentId);
             ViewBag.NowAction = NowAction;
             return Menu;
         }
         private List<ViewMenu> GetMenu(List<SystemMenu> MenuList, int ParentCode, string NowAction)
         {
             List<ViewMenu> NewMeun = new List<ViewMenu>();
-
             var list = MenuList.Where(p => p.ParentId == ParentCode && p.ActionRoute != "/home/index").ToList();
             if (list.Count < 1)
             {
@@ -50,10 +51,6 @@ namespace PartialHtml.ViewComponents
                 if (NowAction == item.ActionRoute)
                 {
                     IsChecked = true;
-                    if (ParentCode != 0)
-                    {
-                        UpdateParentMenuIsChecked(NewMeun, ParentCode);
-                    }
                 }
                 NewMeun.Add(new ViewMenu()
                 {
@@ -69,13 +66,31 @@ namespace PartialHtml.ViewComponents
             return NewMeun;
         }
 
-        private void UpdateParentMenuIsChecked(List<ViewMenu> MenuList, int Code)
+        private void UpdateParentMenuChecked(List<ViewMenu> MenuList,int ParentId)
         {
-            var ParentMenu = MenuList.Where(p => p.MenuCode == Code).First();
-            ParentMenu.IsChecked = true;
-            if (ParentMenu.ParentCode != 0)
+           foreach(var item in MenuList)
             {
-                UpdateParentMenuIsChecked(MenuList, ParentMenu.ParentCode);
+               
+                if (item.MenuCode == ParentId)
+                {
+                    item.IsChecked = true;
+                    if (item.ParentCode != 0)
+                    {
+                        UpdateParentMenuChecked(MenuList, item.ParentCode);
+                    }
+                    return;
+                }
+                else
+                {
+                    if (item.Children.Count > 0)
+                    {
+                        UpdateParentMenuChecked(item.Children, ParentId);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
             }
         }
     }

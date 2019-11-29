@@ -10,7 +10,7 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-xs-1">
-                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemmenu/Create" data-toggle="modal">新增 <i class="fa fa-plus"></i></a>
+                            <a onclick="modal_click(this);" class="btn btn-default" data-url="/systemmenu/Create?modal=true" data-toggle="modal">新增 <i class="fa fa-plus"></i></a>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                                         </td>
 
                                         <td>
-                                            <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@item.MenuCode" data-toggle="modal">编辑</span>
+                                            <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@item.MenuCode&modal=true" data-toggle="modal">编辑</span>
                                             @if (item.Status == 0)
                                             {
                                                 <span class="label label-sm label-success" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@item.MenuCode" data-popout="true">启用</span>
@@ -64,7 +64,7 @@
                                             {
                                                 <span class="label label-sm label-danger" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@item.MenuCode" data-popout="true">停用</span>
                                             }
-                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/create?code=@item.MenuCode" data-toggle="modal">新增</span>
+                                            <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/create?code=@item.MenuCode&modal=true" data-toggle="modal">新增</span>
                                         </td>
                                     </tr>
                                     @if (item.Children.Count > 0)
@@ -92,7 +92,7 @@
                                                     @v.MenuType
                                                 </td>
                                                 <td>
-                                                    <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@v.MenuCode" data-toggle="modal">编辑</span>
+                                                    <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@v.MenuCode&modal=true" data-toggle="modal">编辑</span>
                                                     @if (v.Status == 0)
                                                     {
                                                         <span class="label label-sm label-success" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@v.MenuCode" data-popout="true">启用</span>
@@ -101,7 +101,7 @@
                                                     {
                                                         <span class="label label-sm label-danger" onmouseover="operation(this);" data-url="/systemmenu/changestatus" data-value="id,status" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要停用此菜单" data-status="0" data-id="@v.MenuCode" data-popout="true">停用</span>
                                                     }
-                                                    <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/create?code=@v.MenuCode" data-toggle="modal">新增</span>
+                                                    <span class="label label-sm label-info" onclick="modal_click(this);" data-url="/systemmenu/create?code=@v.MenuCode&modal=true" data-toggle="modal">新增</span>
                                                 </td>
                                             </tr>
                                             @if (v.Children.Count > 0)
@@ -129,7 +129,7 @@
                                                             @vv.MenuType
                                                         </td>
                                                         <td>
-                                                            <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@vv.MenuCode" data-toggle="modal">编辑</span>
+                                                            <span class="label label-sm label-default" onclick="modal_click(this);" data-url="/systemmenu/edit?code=@vv.MenuCode&modal=true" data-toggle="modal">编辑</span>
                                                             @if (vv.Status == 0)
                                                             {
                                                                 <span class="label label-sm label-success" onmouseover="operation(this);" data-value="id,status" data-url="/systemmenu/changestatus" data-container="body" data-toggle="confirmation-changestatus" data-placement="top" data-original-title="是否要启用此菜单" data-status="1" data-id="@vv.MenuCode" data-popout="true">启用</span>

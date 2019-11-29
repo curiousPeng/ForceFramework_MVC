@@ -161,7 +161,8 @@ namespace DataLayer.Base
             }
             else
             {
-                switch (Type.GetTypeCode(node.Value.GetType()))
+                var type = node.Value.GetType();
+                switch (Type.GetTypeCode(type))
                 {
                     case TypeCode.Boolean:
                         sb.Append(((bool)node.Value) ^ invert ? 1 : 0);
@@ -180,8 +181,31 @@ namespace DataLayer.Base
                         break;
 
                     case TypeCode.Object:
-                        throw new NotSupportedException(string.Format("The constant for '{0}' is not supported", node.Value));
-
+                        if (type.Name.StartsWith("List"))
+                        {
+                            IList list = node.Value as IList;
+                            for(var i =0;i< list.Count; i++)
+                            {
+                                if (type.GenericTypeArguments[0].Name.ToString().StartsWith("Int"))
+                                {
+                                    sb.Append("");
+                                    sb.Append(list[i]);
+                                    sb.Append(",");
+                                }
+                                else
+                                {
+                                    sb.Append("'");
+                                    sb.Append(list[i]);
+                                    sb.Append("',");
+                                }
+                            }
+                            sb.Remove(sb.ToString().LastIndexOf(','), 1);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException(string.Format("The constant for '{0}' is not supported", node.Value));
+                        }
+                        break;
                     default:
                         sb.Append(node.Value);
                         break;
