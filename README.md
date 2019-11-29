@@ -22,7 +22,3 @@
 
 #### 队列
 + RabbitMQ，封装了一下使用的是 * https://github.com/curiousPeng/Tools/tree/master/LightMessager * 项目。
-
-#### 文档
-+ Swagger
-
