@@ -74,7 +74,15 @@ namespace Force.App.Controllers
             {
                 if (requestMethod == "get")
                 {
-                    context.Result = new RedirectResult("/Login/Index");
+                    if (string.IsNullOrEmpty(context.HttpContext.Request.Query["modal"]))
+                    {
+                        context.Result = new RedirectResult("/Login/Index"); 
+                    }
+                    else
+                    {
+                        context.Result = new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("登录已失效，请重新登录！"));
+                    }
+                    
                 }
                 if (requestMethod == "post")
                 {
