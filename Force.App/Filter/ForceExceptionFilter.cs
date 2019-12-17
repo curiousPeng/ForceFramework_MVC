@@ -1,14 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Force.Model.ViewModel.Response;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Force.Model.ViewModel.SubHeader;
-using Microsoft.AspNetCore.Http;
-using Force.DataLayer;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 using NLog;
 
 namespace Force.App.Filter
@@ -16,8 +9,8 @@ namespace Force.App.Filter
     public class ForceExceptionFilter : IExceptionFilter
     {
         protected static Logger log = LogManager.GetCurrentClassLogger();
-        readonly IHostingEnvironment _env;//环境变量
-        public ForceExceptionFilter(IHostingEnvironment env)
+        readonly IWebHostEnvironment _env;//环境变量
+        public ForceExceptionFilter(IWebHostEnvironment env)
         {
             _env = env;
         }

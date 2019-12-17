@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Force.App.Extension;
@@ -9,13 +8,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NLog.Extensions.Logging;
-using NLog.Web;
+using Microsoft.Extensions.Hosting;
 
 namespace Force.App
 {
@@ -31,22 +26,13 @@ namespace Force.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddMemoryCache();
-            services.AddNLog();
-            services.AddMvc(
-                options =>
+            services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<ForceActionFilter>();
                 options.Filters.Add<ForceExceptionFilter>();
-            })
-               .AddJsonOptions(
-                options =>
-               {
-                   //设置时间格式
-                   options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-               })
-               .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddMemoryCache();
             services.AddRedis(Configuration.GetSection("RedisConn").Value);
             services.AddRabbitMQ(Common.LightMessager.DAL.DataBaseEnum.SqlServer, Configuration.GetSection("RabbitMqConn").Value);
 
@@ -54,13 +40,12 @@ namespace Force.App
             {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            //Session服务
+            //Session����
             services.AddSession();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -72,21 +57,18 @@ namespace Force.App
                 app.UseHsts();
             }
             app.UseStatusCodePagesWithReExecute("/home/error");
+            app.UseRouting();
             app.UseSession(new SessionOptions() { IdleTimeout = TimeSpan.FromHours(2) });
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            loggerFactory.AddNLog();
-            env.ConfigureNLog("NLog.config");
-            app.UseMvc(routes =>
+            //app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                   name: "areaRoute",
-                   template: "{area}/{controller}/{action}/{id?}"
+                endpoints.MapControllers();
 
-                   );
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
