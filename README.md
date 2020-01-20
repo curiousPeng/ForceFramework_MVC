@@ -6,6 +6,7 @@
 	+ Model->数据库实体类，其他实体类
 	+ Resource-> 前端页面用到的各种插件，样式,需要单独部署一个站点（需要打开跨域）
     + 其中DataLayer和Model类通过生成工具生成，生成工具https://github.com/curiousPeng/CodeGenerator
+    + 现在使用的是https://github.com/curiousPeng/CodeGenerator-old 支持MySql,SqlServer,Oracle
 
 #### 数据库
 + 支持MySQL和SQL server，理论上CodeGenerator支持生成那种就可以用那种。
