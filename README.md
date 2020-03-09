@@ -4,7 +4,7 @@
 	+ Common->公用工具类
 	+ DataLayer->数据库操作类
 	+ Model->数据库实体类，其他实体类
-	+ Resource-> 前端页面用到的各种插件，样式,需要单独部署一个站点（需要打开跨域）
+	+ Resource-> 前端页面用到的各种插件，样式,使用的是metronic_v5.1.7的前端样板，静态资源 需要单独部署一个站点（需要打开跨域）
     + 其中DataLayer和Model类通过生成工具生成，生成工具https://github.com/curiousPeng/CodeGenerator
     + 现在使用的是https://github.com/curiousPeng/CodeGenerator-old 支持MySql,SqlServer,Oracle
 
