@@ -26,4 +26,9 @@
 + demo用法也参考上面的项目
 
 #### 界面
-
++ ![登录界面](https://github.com/curiousPeng/ForceFramework_MVC/blob/master/doc/Preview/login.jpg)
++ ![首页](https://github.com/curiousPeng/ForceFramework_MVC/blob/master/doc/Preview/index.jpg)
++ ![菜单](https://github.com/curiousPeng/ForceFramework_MVC/blob/master/doc/Preview/menu.jpg)
++ ![用户](https://github.com/curiousPeng/ForceFramework_MVC/blob/master/doc/Preview/user.jpg)
++ ![角色](https://github.com/curiousPeng/ForceFramework_MVC/blob/master/doc/Preview/role.jpg)
++ ![分配权限](https://github.com/curiousPeng/ForceFramework_MVC/blob/master/doc/Preview/roleAuth.jpg)
