@@ -62,7 +62,7 @@ namespace Force.App.Controllers
             {
                 action = "/home/index";
             }
-            if (action.Equals("/home/errormsg")|| action.Equals("/home/error"))
+            if (action.Equals("/home/errormsg") || action.Equals("/home/error"))
             {
                 base.OnActionExecuting(context);
                 return;
@@ -76,13 +76,13 @@ namespace Force.App.Controllers
                 {
                     if (string.IsNullOrEmpty(context.HttpContext.Request.Query["modal"]))
                     {
-                        context.Result = new RedirectResult("/Login/Index"); 
+                        context.Result = new RedirectResult("/Login/Index");
                     }
                     else
                     {
                         context.Result = new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("登录已失效，请重新登录！"));
                     }
-                    
+
                 }
                 if (requestMethod == "post")
                 {
@@ -94,7 +94,7 @@ namespace Force.App.Controllers
             {
                 if (requestMethod == "get")
                 {
-                    context.Result = new RedirectResult("/home/errormsg?msg="+ WebUtility.UrlEncode("菜单还未添加，请联系管理员添加"));
+                    context.Result = new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("菜单还未添加，请联系管理员添加"));
                 }
                 if (requestMethod == "post")
                 {
@@ -111,7 +111,7 @@ namespace Force.App.Controllers
             {
                 if (requestMethod == "get")
                 {
-                    if(string.IsNullOrEmpty(context.HttpContext.Request.Query["modal"]))
+                    if (string.IsNullOrEmpty(context.HttpContext.Request.Query["modal"]))
                     {
                         context.Result = new RedirectResult("/home/error?errorcode=401");
                     }
@@ -119,7 +119,7 @@ namespace Force.App.Controllers
                     {
                         context.Result = new RedirectResult("/home/errormsg?msg=" + WebUtility.UrlEncode("没有权限访问此功能！"));
                     }
-                    
+
                 }
                 if (requestMethod == "post")
                 {

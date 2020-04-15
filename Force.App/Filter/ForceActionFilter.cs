@@ -21,7 +21,6 @@ namespace Force.App.Filter
                 {
                     viewResult.ViewData["SubHeader"] = new SubHeader
                     {
-
                         Title = context.RouteData.Values["controller"].ToString(),
                         LinkText = new Dictionary<string, string>()
                     };
