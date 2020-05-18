@@ -1,4 +1,5 @@
-## ForceFramework
+## ForceFramework v2.2
++ 这是asp.net core 2.2版本的
 + 结构介绍：
 	+ App->具体项目
 	+ Common->公用工具类
