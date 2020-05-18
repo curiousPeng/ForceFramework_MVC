@@ -31,8 +31,6 @@ namespace Force.App.Extension
                     services.AddSingleton(typeof(IMessageQueueHelper), _ => new Common.LightMessager.DAL.SqlServer.MessageQueueHelper(connString));
                     break;
                 case DataBaseEnum.Oracle:
-                    services.AddSingleton(typeof(IMessageQueueHelper), _ => new Common.LightMessager.DAL.Oracle.MessageQueueHelper(connString));
-                    break;
                 default:
                     throw new NotSupportedException();
 

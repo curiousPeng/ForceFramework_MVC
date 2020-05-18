@@ -15,7 +15,6 @@ namespace Force.App.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            //logger.Info("test11111");
             var subHeader = new SubHeader { Title = "Dashboard", PageTitle= "Dashboard", SubPageTitle= "dashboard & statistics", LinkText = new Dictionary<string, string> { { "主页", "/home/index" } } };
             ViewData["SubHeader"] = subHeader;
             return View();

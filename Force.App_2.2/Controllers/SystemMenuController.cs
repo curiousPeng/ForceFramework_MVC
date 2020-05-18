@@ -1,14 +1,17 @@
-﻿using Force.App.Util;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Force.App.Util;
 using Force.DataLayer;
+using Force.DataLayer.Metadata;
+using Force.GenEnum;
 using Force.Model;
 using Force.Model.ViewModel.Menu;
 using Force.Model.ViewModel.SubHeader;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Force.App.Controllers
 {
@@ -16,10 +19,10 @@ namespace Force.App.Controllers
     {
         public SystemMenuController(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) { }
         // GET: SystemMenu
-
         public ActionResult Index()
         {
             //查出所有菜单并生成菜单树
+
             var menu = SystemMenuHelper.GetList();
             var newMenu = CreateMenu(menu, 0);
             var subHeader = new SubHeader { Title = "菜单列表", PageTitle = "菜单列表", SubPageTitle = "所有菜单", LinkText = new Dictionary<string, string>() };

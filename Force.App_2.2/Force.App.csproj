@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>c3099737-b860-48ca-97f9-d5c7e2f739b4</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+    <OutputPath>bin\Debug\netcoreapp2.2\</OutputPath>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\Error.cshtml" />
+    <Content Remove="Views\Home\Error401.cshtml" />
+    <Content Remove="Views\Home\Error404.cshtml" />
+    <Content Remove="Views\Home\index.cshtml" />
+    <Content Remove="Views\Login\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.6" />
+    <PackageReference Include="StackExchange.Exceptional.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Force.Common\Force.Common.csproj" />
+    <ProjectReference Include="..\Force.DataLayer\Force.DataLayer.csproj" />
+    <ProjectReference Include="..\Force.Model\Force.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\Error.cshtml" />
+    <None Include="Views\Home\Error401.cshtml" />
+    <None Include="Views\Home\Error404.cshtml" />
+    <None Include="Views\Home\index.cshtml" />
+    <None Include="Views\Login\Index.cshtml" />
+    <None Include="Views\Shared\Components\Head\Default.cshtml" />
+    <None Include="Views\Shared\Components\Menu\Default.cshtml" />
+    <None Include="wwwroot\assets\demo\default\base\scripts.bundle.js" />
+    <None Include="wwwroot\assets\vendors\base\vendors.bundle.js" />
+  </ItemGroup>
+
+</Project>
