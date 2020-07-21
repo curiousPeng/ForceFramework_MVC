@@ -16,4 +16,10 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="FastMember">
+      <HintPath>Redis\lib\FastMember.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,5 @@
 ﻿using Force.Common.LightMessager.Helper;
-using Force.Common.RedisTool.Helper;
+using Force.Common.RedisTools;
 using Force.DataLayer;
 using Force.Model.ViewModel.Session;
 using Microsoft.AspNetCore.Http;

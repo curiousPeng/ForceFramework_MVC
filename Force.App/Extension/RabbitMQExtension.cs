@@ -1,5 +1,4 @@
-﻿using Force.Common.RedisTool.Base;
-using Force.Common.RedisTool.Helper;
+﻿using Force.Common.RedisTools;
 using Force.Common.LightMessager.DAL;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

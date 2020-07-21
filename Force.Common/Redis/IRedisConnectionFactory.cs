@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Force.Common.RedisTools
 {
-    public interface IRedisBase
+    public interface IRedisConnectionFactory
     {
-        IDatabase GetDB(int index);
-        ConnectionMultiplexer GetConnection();
+        IConnectionMultiplexer Get();
     }
 }
