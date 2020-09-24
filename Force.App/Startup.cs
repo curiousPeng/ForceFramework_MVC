@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
+using GrpcServiceGreeter;
 
 namespace Force.App
 {
@@ -37,7 +38,7 @@ namespace Force.App
             services.AddMemoryCache();
             services.AddRedis(Configuration.GetSection("RedisConn").Value);
             services.AddRabbitMQ(Common.LightMessager.DAL.DataBaseEnum.SqlServer, Configuration.GetSection("RabbitMqConn").Value);
-
+            services.AddGrpc();
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.MinimumSameSitePolicy = SameSiteMode.None;
@@ -76,6 +77,7 @@ namespace Force.App
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapGrpcService<GreeterService>();
             });
         }
     }
