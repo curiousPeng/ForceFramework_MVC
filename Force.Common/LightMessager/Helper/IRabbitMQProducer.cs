@@ -7,8 +7,8 @@ namespace Force.Common.LightMessager.Helper
 {
     public interface IRabbitMQProducer
     {
-        bool Send(BaseMessage message, int delaySend = 0);
-        bool Publish(BaseMessage message, string pattern, int delaySend = 0);
-        bool FanoutPublish(BaseMessage message);
+        bool DirectSend(BaseMessage message, int delaySend = 0);
+        bool TopicSend(BaseMessage message, int delaySend = 0);
+        bool FanoutSend(BaseMessage message, int delaySend = 0);
     }
 }

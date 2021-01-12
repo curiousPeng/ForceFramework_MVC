@@ -7,7 +7,7 @@ namespace Force.Common.LightMessager.Helper
     public class QueueInfo
     {
         public string Exchange;
-        public string DefaultRouteKey;
+        public string RouteKey;
         public string Queue;
     }
 }

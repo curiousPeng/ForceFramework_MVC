@@ -1,4 +1,5 @@
-﻿using Force.Common.LightMessager.DAL;
+﻿using Force.Common.LightMessager.Common;
+using Force.Common.LightMessager.DAL;
 using Force.Common.LightMessager.DAL.Model;
 using Force.Common.LightMessager.Message;
 using Force.Common.LightMessager.Pool;
@@ -15,7 +16,7 @@ using System.Threading;
 
 namespace Force.Common.LightMessager.Helper
 {
-    public sealed class RabbitMQProducer: IRabbitMQProducer
+    public sealed class RabbitMQProducer : IRabbitMQProducer
     {
         static ConnectionFactory factory;
         static IConnection connection;
@@ -23,11 +24,9 @@ namespace Force.Common.LightMessager.Helper
         static readonly int default_retry_wait;
         static readonly int default_retry_count;
         static List<long> prepersist;
-        static ConcurrentQueue<BaseMessage> direct_queue;
-        static ConcurrentQueue<BaseMessage> topic_queue;
-        static ConcurrentQueue<BaseMessage> fanout_queue;
-        static ConcurrentDictionary<Type, QueueInfo> dict_info;
-        static ConcurrentDictionary<Type, string> dict_info_fanout;
+        static BlockingQueue<BaseMessage> direct_queue;
+        static BlockingQueue<BaseMessage> topic_queue;
+        static BlockingQueue<BaseMessage> fanout_queue;
         static ConcurrentDictionary<Type, ObjectPool<IPooledWapper>> pools;
         private static IMessageQueueHelper _message_queue_helper;
 
@@ -44,81 +43,99 @@ namespace Force.Common.LightMessager.Helper
             connection = factory.CreateConnection();
             _message_queue_helper = messageQueueHelper;
         }
+        public RabbitMQProducer(ConnectionModel connectionModel)
+        {
+            factory = new ConnectionFactory();
+            factory.UserName = connectionModel.UserName; // "admin";
+            factory.Password = connectionModel.Password; // "123456";
+            factory.VirtualHost = connectionModel.VirtualHost; // "/";
+            factory.HostName = connectionModel.HostName; // "127.0.0.1";
+            factory.Port = connectionModel.Port; // 5672;
+            factory.AutomaticRecoveryEnabled = connectionModel.AutomaticRecoveryEnabled;//true
+            factory.NetworkRecoveryInterval = connectionModel.NetworkRecoveryInterval;//15
+            connection = factory.CreateConnection();
+        }
         static RabbitMQProducer()
         {
             prepersist_count = 0;
             default_retry_wait = 1000; // 1秒
             default_retry_count = 3; // 消息重试最大3次
             prepersist = new List<long>();
-            direct_queue = new ConcurrentQueue<BaseMessage>();
-            topic_queue = new ConcurrentQueue<BaseMessage>();
-            fanout_queue = new ConcurrentQueue<BaseMessage>();
-            dict_info = new ConcurrentDictionary<Type, QueueInfo>();
-            dict_info_fanout = new ConcurrentDictionary<Type, string>();
+            direct_queue = new BlockingQueue<BaseMessage>(1000);
+            topic_queue = new BlockingQueue<BaseMessage>(1000);
+            fanout_queue = new BlockingQueue<BaseMessage>(1000);
             pools = new ConcurrentDictionary<Type, ObjectPool<IPooledWapper>>();
 
             //开启轮询检测，扫描重试队列，重发消息
             new Thread(() =>
             {
-                // 先实现为spin的方式，后面考虑换成blockingqueue的方式
                 while (true)
                 {
                     BaseMessage send_item;
-                    while (direct_queue.TryDequeue(out send_item))
-                    {
-                        SendDirect(send_item);
-                    }
-
+                    direct_queue.Dequeue(out send_item);
+                    SendDirect(send_item);
+                }
+            }).Start();
+            new Thread(() =>
+            {
+                while (true)
+                {
                     BaseMessage pub_item;
-                    while (topic_queue.TryDequeue(out pub_item))
-                    {
-                        SendTopic(pub_item, pub_item.Pattern);
-                    }
-
+                    topic_queue.Dequeue(out pub_item);
+                    SendTopic(pub_item);
+                }
+            }).Start();
+            new Thread(() =>
+            {
+                while (true)
+                {
                     BaseMessage pub_item_fanout;
-                    while (fanout_queue.TryDequeue(out pub_item_fanout))
-                    {
-                        SendFanout(pub_item_fanout);
-                    }
-                    Thread.Sleep(1000 * 5);
+                    fanout_queue.Dequeue(out pub_item_fanout);
+                    SendFanout(pub_item_fanout);
                 }
             }).Start();
         }
 
         /// <summary>
-        /// 发送一条消息
+        /// 发送一条消息，默认的direct模式,自定义exchangeName,queueName
         /// </summary>
-        /// <typeparam name="TMessage">消息类型</typeparam>
         /// <param name="message">消息</param>
-        /// <param name="delaySend">延迟多少毫秒发送消息</param>
+        /// <param name="exchangeName">exchangeName</param>
+        /// <param name="queueName">队列名</param>
+        /// <param name="routeKey">路由键，不定义就默认使用队列名做路由键</param>
+        /// <param name="delaySend">延迟多少毫秒发送消息,一般不低于5000</param>
         /// <returns>发送成功返回true，否则返回false</returns>
-        public bool Send(BaseMessage message, int delaySend = 0)
+        public bool DirectSend(BaseMessage message, int delaySend = 0)
         {
             return SendDirect(message, delaySend);
         }
 
         /// <summary>
-        /// 发布一条消息
+        /// topic模式发送消息
         /// </summary>
-        /// <typeparam name="TMessage"></typeparam>
         /// <param name="message">消息</param>
-        /// <param name="pattern">消息满足的模式（也就是routeKey）</param>
+        /// <param name="exchangeName">exchangeName</param>
+        /// <param name="queueName">队列名</param>
+        /// <param name="routeKey">路由键</param>
         /// <param name="delaySend">延迟多少毫秒发布消息</param>
         /// <returns>发布成功返回true，否则返回false</returns>
-        public bool Publish(BaseMessage message, string pattern, int delaySend = 0)
+        public bool TopicSend(BaseMessage message, int delaySend = 0)
         {
-            return SendTopic(message, pattern, delaySend);
+            return SendTopic(message, delaySend);
         }
 
         /// <summary>
-        /// fanout模式发布消息,此模式适合两种及以上业务用同一条消息订阅使用，如果只有一种业务或者单机建议用默认模式
+        /// fanout模式发布消息
+        /// 此模式适合两种及以上业务用同一条消息订阅使用，如果只有一种业务或者单机建议用默认模式
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="exchangeName"></param>
+        /// <param name="queueName"></param>
         /// <param name="delaySend"></param>
         /// <returns></returns>
-        public bool FanoutPublish(BaseMessage message)
+        public bool FanoutSend(BaseMessage message, int delaySend = 0)
         {
-            return SendFanout(message);
+            return SendFanout(message, delaySend);
         }
 
         private static bool SendDirect(BaseMessage message, int delaySend = 0)
@@ -134,17 +151,26 @@ namespace Force.Common.LightMessager.Helper
             }
 
             var messageType = message.GetType();
-            delaySend = delaySend == 0 ? delaySend : Math.Max(delaySend, 1000); // 至少保证1秒的延迟，否则意义不大
+            delaySend = delaySend == 0 ? delaySend : Math.Max(delaySend, 5000); // 至少保证5秒的延迟，否则意义不大
             using (var pooled = InnerCreateChannel(messageType))
             {
                 IModel channel = pooled.Channel;
                 pooled.PreRecord(message.MsgHash);
 
                 var exchange = string.Empty;
-                var route_key = string.Empty;
                 var queue = string.Empty;
-                EnsureQueue(channel, messageType, out exchange, out route_key, out queue, delaySend);
+                if (!string.IsNullOrEmpty(message.exchangeName) && !string.IsNullOrEmpty(message.queueName) && !string.IsNullOrEmpty(message.routeKey))
+                {
+                    exchange = message.exchangeName;
+                    queue = message.queueName;
+                    EnsureQueue.DirectEnsureQueue(channel, ref exchange, ref queue, message.routeKey, delaySend);
+                }
+                else
+                {
+                    EnsureQueue.DirectEnsureQueue(channel, messageType, out exchange, out queue, delaySend);
+                }
 
+                var route_key = queue;
                 var json = JsonConvert.SerializeObject(message);
                 var bytes = Encoding.UTF8.GetBytes(json);
                 var props = channel.CreateBasicProperties();
@@ -178,17 +204,16 @@ namespace Force.Common.LightMessager.Helper
 
             return true;
         }
-
-        private static bool SendTopic(BaseMessage message, string pattern, int delaySend = 0)
+        private static bool SendTopic(BaseMessage message, int delaySend = 0)
         {
             if (string.IsNullOrWhiteSpace(message.Source))
             {
                 throw new ArgumentNullException("message.Source");
             }
 
-            if (string.IsNullOrWhiteSpace(pattern))
+            if (string.IsNullOrWhiteSpace(message.routeKey))
             {
-                throw new ArgumentNullException("pattern");
+                throw new ArgumentNullException("routeKey");
             }
 
             if (!PrePersistMessage(message))
@@ -204,16 +229,24 @@ namespace Force.Common.LightMessager.Helper
                 pooled.PreRecord(message.MsgHash);
 
                 var exchange = string.Empty;
-                var route_key = string.Empty;
                 var queue = string.Empty;
-                EnsureQueue(channel, messageType, out exchange, out route_key, out queue, pattern, delaySend);
+                if (!string.IsNullOrEmpty(message.exchangeName) && !string.IsNullOrEmpty(message.queueName))
+                {
+                    exchange = message.exchangeName;
+                    queue = message.queueName;
+                    EnsureQueue.TopicEnsureQueue(channel, message.routeKey, ref exchange, ref queue, delaySend);
+                }
+                else
+                {
+                    EnsureQueue.TopicEnsureQueue(channel, messageType, message.routeKey, out exchange, out queue, delaySend);
+                }
 
                 var json = JsonConvert.SerializeObject(message);
                 var bytes = Encoding.UTF8.GetBytes(json);
                 var props = channel.CreateBasicProperties();
                 props.ContentType = "text/plain";
                 props.DeliveryMode = 2;
-                channel.BasicPublish(exchange, pattern, props, bytes);
+                channel.BasicPublish(exchange, message.routeKey, props, bytes);
                 var time_out = Math.Max(default_retry_wait, message.RetryCount_Publish * 2 /*2倍往上扩大，防止出现均等*/ * 1000);
                 var ret = channel.WaitForConfirms(TimeSpan.FromMilliseconds(time_out));
                 if (!ret)
@@ -229,7 +262,6 @@ namespace Force.Common.LightMessager.Helper
                         {
                             message.RetryCount_Publish += 1;
                             message.LastRetryTime = DateTime.Now;
-                            message.Pattern = pattern;
                             topic_queue.Enqueue(message);
                             return true;
                         }
@@ -241,8 +273,7 @@ namespace Force.Common.LightMessager.Helper
 
             return true;
         }
-
-        private static bool SendFanout(BaseMessage message)
+        private static bool SendFanout(BaseMessage message, int delaySend = 0)
         {
             if (string.IsNullOrWhiteSpace(message.Source))
             {
@@ -264,8 +295,15 @@ namespace Force.Common.LightMessager.Helper
                 // pooled.PreRecord(message.MsgHash);无需修改状态了
 
                 var exchange = string.Empty;
-                PublishEnsureQueue(channel, messageType, out exchange);
-
+                if (!string.IsNullOrEmpty(message.exchangeName))
+                {
+                    exchange = message.exchangeName;
+                    EnsureQueue.FanoutEnsureQueue(channel, ref exchange, delaySend);
+                }
+                else
+                {
+                    EnsureQueue.FanoutEnsureQueue(channel, messageType, out exchange, delaySend);
+                }
                 var json = JsonConvert.SerializeObject(message);
                 var bytes = Encoding.UTF8.GetBytes(json);
                 var props = channel.CreateBasicProperties();
@@ -318,14 +356,11 @@ namespace Force.Common.LightMessager.Helper
                 else
                 {
                     message.MsgHash = msgHash;
-                    if (Interlocked.Increment(ref prepersist_count) != 1000)
-                    {
-                        prepersist.Add(msgHash);
-                    }
-                    else
+                    if (Interlocked.Increment(ref prepersist_count) == 1000)
                     {
                         prepersist.RemoveRange(0, 950);
                     }
+                    prepersist.Add(msgHash);
 
                     var model = _message_queue_helper.GetModelBy(msgHash);
                     if (model != null)
@@ -357,122 +392,6 @@ namespace Force.Common.LightMessager.Helper
                 // 直接返回true，以便后续可以进行重发
                 return true;
             }
-        }
-
-        private static void EnsureQueue(IModel channel, Type messageType, out string exchange, out string routeKey, out string queue, int delaySend = 0)
-        {
-            var type = messageType;
-            if (!dict_info.ContainsKey(type))
-            {
-                var info = GetQueueInfo(type);
-                exchange = info.Exchange;
-                routeKey = info.DefaultRouteKey;
-                queue = info.Queue;
-
-                channel.ExchangeDeclare(exchange, ExchangeType.Direct, durable: true);
-                channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
-                channel.QueueBind(queue, exchange, routeKey);
-
-                if (delaySend > 0)
-                {
-                    var args = new Dictionary<string, object>();
-                    args.Add("x-message-ttl", delaySend);
-                    args.Add("x-dead-letter-exchange", exchange);
-                    args.Add("x-dead-letter-routing-key", queue);
-                    channel.QueueDeclare(queue + ".delay", durable: false, exclusive: false, autoDelete: false, arguments: args);
-                    exchange = string.Empty;
-                    routeKey = info.Queue + ".delay";
-                    queue = info.Queue + ".delay";
-                }
-            }
-            else
-            {
-                var info = GetQueueInfo(type);
-                exchange = info.Exchange;
-                routeKey = info.DefaultRouteKey;
-                queue = info.Queue;
-                if (delaySend > 0)
-                {
-                    exchange = string.Empty;
-                    routeKey = info.Queue + ".delay";
-                    queue = info.Queue + ".delay";
-                }
-            }
-        }
-
-        private static void EnsureQueue(IModel channel, Type messageType, out string exchange, out string routeKey, out string queue, string pattern, int delaySend = 0)
-        {
-            var type = messageType;
-            if (!dict_info.ContainsKey(type))
-            {
-                var info = GetQueueInfo(type);
-                exchange = "topic." + info.Exchange;
-                routeKey = pattern;
-                queue = info.Queue;
-                channel.ExchangeDeclare(exchange, ExchangeType.Topic, durable: true);
-
-                if (delaySend > 0)
-                {
-                    var args = new Dictionary<string, object>();
-                    args.Add("x-message-ttl", delaySend);
-                    args.Add("x-dead-letter-exchange", exchange);
-                    args.Add("x-dead-letter-routing-key", pattern);
-                    channel.QueueDeclare(queue + ".delay", durable: true, exclusive: false, autoDelete: false, arguments: args);
-                    exchange = string.Empty;
-                    routeKey = info.Queue + ".delay";
-                    queue = info.Queue + ".delay";
-                }
-            }
-            else
-            {
-                var info = GetQueueInfo(type);
-                exchange = "topic." + info.Exchange;
-                routeKey = pattern;
-                queue = info.Queue;
-                if (delaySend > 0)
-                {
-                    exchange = string.Empty;
-                    routeKey = info.Queue + ".delay";
-                    queue = info.Queue + ".delay";
-                }
-            }
-        }
-
-        private static void PublishEnsureQueue(IModel channel, Type messageType, out string exchange)
-        {
-            var type = messageType;
-            if (!dict_info_fanout.ContainsKey(type))
-            {
-                var info = GetQueueInfoForFanout(messageType);
-                exchange = info;
-                channel.ExchangeDeclare(exchange, ExchangeType.Fanout, durable: true);
-            }
-            else
-            {
-                var info = GetQueueInfoForFanout(messageType);
-                exchange = info;
-            }
-        }
-
-        private static QueueInfo GetQueueInfo(Type messageType)
-        {
-            var type_name = messageType.IsGenericType ? messageType.GenericTypeArguments[0].Name : messageType.Name;
-            var info = dict_info.GetOrAdd(messageType, t => new QueueInfo
-            {
-                Exchange = type_name + ".exchange",
-                DefaultRouteKey = type_name + ".input",
-                Queue = type_name + ".input"
-            });
-
-            return info;
-        }
-
-        private static string GetQueueInfoForFanout(Type messageType)
-        {
-            var type_name = messageType.IsGenericType ? messageType.GenericTypeArguments[0].Name : messageType.Name;
-            var info = dict_info_fanout.GetOrAdd(messageType, type_name + ".exchange");
-
-            return info;
         }
 
         public static long GenerateMessageIdFrom(string str)

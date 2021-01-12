@@ -67,7 +67,7 @@ namespace Force.Common.LightMessager.DAL.SqlServer
             sql.AppendLine("WHERE [MsgHash]=@MsgHash and [Status]=@fromStatus");
             sql.AppendLine("SELECT @retVal = @@Rowcount ");
             sql.AppendLine("IF (@retVal = 0) BEGIN");
-            sql.AppendLine("UPDATE [MessageQueue] set [Status]=5 WHERE [MsgHash]=@MsgHash END SELECT @retVal"); // 5 Exception
+            sql.AppendLine("UPDATE [MessageQueue] set [Status]=4 WHERE [MsgHash]=@MsgHash END SELECT @retVal"); // 4 Exception
             var ret = false;
             using (var conn = GetOpenConnection())
             {
@@ -77,7 +77,7 @@ namespace Force.Common.LightMessager.DAL.SqlServer
                     @fromStatus = fromStatus,
                     @toStatus = toStatus,
                     @LastRetryTime = DateTime.Now,
-                    @CanBeRemoved = toStatus == 6 ? true : false // 6 Processed
+                    @CanBeRemoved = toStatus == 5 ? true : false // 5 Processed
                 }) > 0;
             }
 
@@ -93,7 +93,7 @@ namespace Force.Common.LightMessager.DAL.SqlServer
             sql.AppendLine("WHERE [MsgHash]=@MsgHash and ([Status]=@fromStatus1 or [Status]=@fromStatus1)");
             sql.AppendLine("SELECT @retVal = @@Rowcount ");
             sql.AppendLine("IF (@retVal = 0) BEGIN");
-            sql.AppendLine("UPDATE [MessageQueue] set [Status]=5 WHERE [MsgHash]=@MsgHash END SELECT @retVal"); // 5 Exception
+            sql.AppendLine("UPDATE [MessageQueue] set [Status]=4 WHERE [MsgHash]=@MsgHash END SELECT @retVal"); // 4 Exception
             var ret = false;
             using (var conn = GetOpenConnection())
             {
@@ -104,7 +104,7 @@ namespace Force.Common.LightMessager.DAL.SqlServer
                     @fromStatus2 = fromStatus2,
                     @toStatus = toStatus,
                     @LastRetryTime = DateTime.Now,
-                    @CanBeRemoved = toStatus == 6 ? true : false // 6 Processed
+                    @CanBeRemoved = toStatus == 5 ? true : false // 5 Processed
                 }) > 0;
             }
 

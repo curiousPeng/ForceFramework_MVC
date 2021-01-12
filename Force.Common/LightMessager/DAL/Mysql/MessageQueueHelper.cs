@@ -75,11 +75,11 @@ namespace Force.Common.LightMessager.DAL.Mysql
                     @fromStatus = fromStatus,
                     @toStatus = toStatus,
                     @LastRetryTime = DateTime.Now,
-                    @CanBeRemoved = toStatus == 6 ? true : false // 6 Processed
+                    @CanBeRemoved = toStatus == 5 ? true : false // 5 Processed
                 });
                 if (retVal == 0)
                 {
-                    var sql1 = "UPDATE `MessageQueue` set `Status`=5 WHERE `MsgHash`=@MsgHash;";
+                    var sql1 = "UPDATE `MessageQueue` set `Status`=4 WHERE `MsgHash`=@MsgHash;";
                     conn.Execute(sql1, new
                     {
                         @MsgHash = msgHash
@@ -108,11 +108,11 @@ namespace Force.Common.LightMessager.DAL.Mysql
                     @fromStatus2 = fromStatus2,
                     @toStatus = toStatus,
                     @LastRetryTime = DateTime.Now,
-                    @CanBeRemoved = toStatus == 6 ? true : false // 6 Processed
+                    @CanBeRemoved = toStatus == 5 ? true : false // 5 Processed
                 });
                 if (retVal == 0)
                 {
-                    var sql1 = "UPDATE `MessageQueue` set `Status`=5 WHERE `MsgHash`=@MsgHash;";
+                    var sql1 = "UPDATE `MessageQueue` set `Status`=4 WHERE `MsgHash`=@MsgHash;";
                     conn.Execute(sql1, new
                     {
                         @MsgHash = msgHash

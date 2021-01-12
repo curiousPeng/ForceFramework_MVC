@@ -67,5 +67,26 @@ namespace Force.Common.LightMessager.Helper
                 return item;
             }
         }
+        /// <summary>
+        /// 出队
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public void Dequeue(out T obj)
+        {
+            lock (_queue)
+            {
+                while (_queue.Count == 0)
+                {
+                    Monitor.Wait(_queue);
+                }
+                obj = _queue.Dequeue();
+                if (_queue.Count == _maxSize - 1)
+                {
+                    // wake up any blocked enqueue
+                    Monitor.PulseAll(_queue);
+                }
+            }
+        }
     }
 }
